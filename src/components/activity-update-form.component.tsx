@@ -5,10 +5,12 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 export interface IActivityUpdateFormProps {
+
 }
 
 export interface IActivityUpdateFormState {
-    selectedFiles: Array<any>
+    selectedFiles: Array<any>,
+    // objData: any
 }
 
 export default class ActivityUpdateForm extends React.Component<IActivityUpdateFormProps, IActivityUpdateFormState> {

@@ -20,7 +20,8 @@ export interface IActivityUpdatePageState {
     open: boolean,
     open2: boolean,
     upcoming_activity: any,
-    completed_activity: any
+    completed_activity: any,
+    current_obj: any
 }
 const style = {
     position: 'absolute' as 'absolute',
@@ -41,6 +42,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 const datalistlength = 10;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class ActivityUpdatePage extends React.Component<
   IActivityUpdatePageProps,
@@ -53,12 +55,32 @@ export default class ActivityUpdatePage extends React.Component<
         open: false,
         open2: false,
         upcoming_activity: [],
-        completed_activity: []
+        completed_activity: [],
+        current_obj: {}
     };
   }
+
+  public componentDidMount() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/student/upcomingEventList/?userId='+localStorage.getItem('userId'), {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        this.setState({ upcoming_activity: data.data.upcomingEvent });
+        this.setState({ completed_activity: data.data.completedEvent });
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
   public render() {
-    const handleOpen = () => {
+    const handleOpen = (obj:any) => {
         this.setState({ open: true });
+        this.setState({ current_obj: obj });
     }
     
     const handlemodel2Open = () => {
@@ -84,15 +106,15 @@ export default class ActivityUpdatePage extends React.Component<
                 Upcoming Events
               </Typography>
               <List>
-                {Array.from({ length: 11 }).map((_, index) => (
+                {this.state.upcoming_activity.map((item:any) => (
                   <ListItem disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <Avatar alt="Remy Sharp" src="/image3.png" />
                       </ListItemIcon>
-                      <ListItemText primary="Tree Plantation Drive 2023" />
-                      <ListItemText primary="22-03-2023" />
-                      <Button variant="contained" size="small" onClick={handleOpen}>
+                      <ListItemText primary={item.eventName} />
+                      <ListItemText primary={item.eventDate} />
+                      <Button variant="contained" size="small" onClick={() => handleOpen(item)}>
                         Attend
                       </Button>
                     </ListItemButton>
@@ -107,14 +129,14 @@ export default class ActivityUpdatePage extends React.Component<
                 Completed Events
               </Typography>
               <List>
-                {Array.from({ length: 11 }).map((_, index) => (
+              {this.state.completed_activity.map((item:any) => (
                   <ListItem disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <Avatar alt="Remy Sharp" src="/image3.png" />
                       </ListItemIcon>
-                      <ListItemText primary="Tree Plantation Drive 2023" />
-                      <ListItemText primary="22-03-2023" />
+                      <ListItemText primary={item.eventName} />
+                      <ListItemText primary={item.eventDate} />
                       <Button
                         variant="contained"
                         size="small"
