@@ -19,6 +19,8 @@ export interface IActivityUpdatePageProps {}
 export interface IActivityUpdatePageState {
     open: boolean,
     open2: boolean,
+    upcoming_activity: any,
+    completed_activity: any
 }
 const style = {
     position: 'absolute' as 'absolute',
@@ -50,7 +52,8 @@ export default class ActivityUpdatePage extends React.Component<
     this.state = {
         open: false,
         open2: false,
-
+        upcoming_activity: [],
+        completed_activity: []
     };
   }
   public render() {

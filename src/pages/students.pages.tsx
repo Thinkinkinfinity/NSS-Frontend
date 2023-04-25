@@ -187,7 +187,7 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
 
   public componentDidMount() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer "+BACKEND_TOKEN);
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     fetch(BACKEND_URL+'/programOfficer/studentList/', {
       method: 'GET',
       headers: myHeaders,

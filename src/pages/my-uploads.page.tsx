@@ -7,55 +7,8 @@ import CardContent from '@mui/material/CardContent';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 
-const itemData = [
-  {
-    img: '/AdobeStock_35428286821.png',
-    title: 'Breakfast',
-  },
-  {
-    img: '/AdobeStock_39556009731.png',
-    title: 'Burger',
-  },
-  {
-    img: '/AdobeStock_39556009741.png',
-    title: 'Camera',
-  },
-  {
-    img: '/AdobeStock_39556009724.png',
-    title: 'Coffee',
-  },
-  {
-    img: '/AdobeStock_39556009782.png',
-    title: 'Hats',
-  },
-  {
-    img: '/AdobeStock_480498250123.png',
-    title: 'Honey',
-  },
-  {
-    img: '/AdobeStock_4804982503123.png',
-    title: 'Basketball',
-  },
-  {
-    img: '/AdobeStock_3542828681321.png',
-    title: 'Fern',
-  },
-  {
-    img: '/AdobeStock_39556009782.png',
-    title: 'Hatsd',
-  },
-  {
-    img: '/AdobeStock_480498250123.png',
-    title: 'Honeya',
-  },
-  {
-    img: '/AdobeStock_4804982503123.png',
-    title: 'Basketballasd',
-  },
-  {
-    img: '/AdobeStock_3542828681321.png',
-    title: 'Ferndas',
-  },
+const itemData: any = [
+  
 ];
 
 export interface IMyUploadsPageProps {
@@ -71,6 +24,7 @@ const bull = (
     •
   </Box>
 );
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, IMyUploadsPageState> {
   constructor(props: IMyUploadsPageProps) {
@@ -79,7 +33,33 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
     this.state = {
     }
   }
-
+  public componentDidMount(): void {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/student/eventList/', {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        for (let i = 0; i < data.data.length; i++) {
+          const element = data.data[i];
+          for (let j = 0; j < element.eventImages.length; j++) {
+            const rowdata = element.eventImages[j];
+            const rowobj = {
+              img: BACKEND_URL+rowdata.eventImage,
+              title: rowdata.id,
+            }
+            itemData.push(rowobj);
+          }
+        }
+        this.setState({ rows: itemData });
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });    
+  }
   public render() {
     return (
       <Box>
@@ -89,7 +69,7 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
             <ImageList sx={{ width: "100%", height: "inherit" }} cols={4} rowHeight={164} gap={50}>
-              {itemData.map((item) => (
+              {itemData.map((item:any) => (
                 <ImageListItem key={item.img}>
                   <img
                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}

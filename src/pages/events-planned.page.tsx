@@ -184,7 +184,7 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
 
   public componentDidMount() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer "+BACKEND_TOKEN);
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     fetch(BACKEND_URL+'/programOfficer/event/', {
       method: 'GET',
       headers: myHeaders,

@@ -7,24 +7,74 @@ export interface IAddStudentFormProps {
 }
 
 export interface IAddStudentFormState {
+    username: any,
+    email: any,
+    password: any,
+    firstName: any,
+    lastName: any,
+    phoneNumber: any, 
+    institutionId: any,
+    unitId: any,
+    userType: any,
+    officerId: any
 }
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class AddStudentForm extends React.Component<IAddStudentFormProps, IAddStudentFormState> {
   constructor(props: IAddStudentFormProps) {
     super(props);
 
     this.state = {
+      username: "",
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "", 
+      institutionId: "",
+      unitId: "",
+      userType: "Students",
+      officerId: localStorage.getItem('userId')
     }
   }
-  handleChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [id]: value
+    }));
   };
 
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    // Use the formData object to make API call or perform other operations
-    console.log(formData.get('username')); 
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    
+    var raw = JSON.stringify({
+        "username": this.state.username,
+        "email": this.state.email,
+        "password": this.state.password,
+        "firstName": this.state.firstName,
+        "lastName": this.state.lastName,
+        "phoneNumber": this.state.phoneNumber,
+        "institutionId": this.state.institutionId,
+        "unitId": this.state.unitId,
+        "userType": this.state.userType,
+        "officerId": this.state.officerId
+      });
+      
+    fetch(BACKEND_URL+'/programOfficer/addStudent/', {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log(result)
+        window.location.reload()
+        })
+      .catch(error => console.log('error', error));
     
   };
 
@@ -34,106 +84,109 @@ export default class AddStudentForm extends React.Component<IAddStudentFormProps
         <Typography variant="h6" gutterBottom>
         Add Student
         </Typography>
-        <form>
+        <form onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="First Name"
                         name="firstname"
                         size="small"
+                        id='firstName'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Unit Number"
                         name="unitnumber"
                         size="small"
+                        id='unitId'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Phone Number"
                         name="phonenumber"
                         size="small"
+                        id='phoneNumber'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Username"
                         name="username"
                         size="small"
+                        id='username'
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={4}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Last Name"
                         name="lastname"
                         size="small"
+                        id='lastName'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
-                        label="Program Officer"
+                        label="Program Officer ID"
                         name="programofficer"
                         size="small"
+                        id='officerId'
+                        value={this.state.officerId}
+                        InputProps={{
+                            readOnly: true,
+                        }}
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
-                        label="Student ID"
-                        name="studentid"
+                        label="User Name"
+                        name="username"
                         size="small"
+                        id='username'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Password"
                         name="password"
                         type="password"
+                        id='password'
                         size="small"
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={4}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
-                        label="Institution Name"
+                        label="Institution ID"
                         name="institutionname"
                         size="small"
+                        id='institutionId'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Email ID"
                         name="emailid"
                         size="small"
+                        id='email'
                         onChange={this.handleChange}
                     />
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Blood Group"

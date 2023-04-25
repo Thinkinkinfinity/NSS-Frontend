@@ -1,10 +1,16 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from '@mui/material/Grid';
-import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import SignupComponent from "../components/signup.component";
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button'
 
 export interface ISignupPageProps {}
 
@@ -31,38 +37,49 @@ export default class SignupPage extends React.Component<
           backgroundImage: `url('/background.png')`,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            "& > :not(style)": {
-              m: 1,
-              width: 900,
-              height: 500,
-            },
-          }}
-        >
-            <Paper elevation={3} sx={{maxHeight: 'inherit', width: '100%'}}>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <Carousel showThumbs={false}>
-                        <div>
-                            <img src="/carousalpic1.png" alt="carousel 1" style={{ objectFit: 'cover', maxHeight: 500 }} />
-                        </div>
-                        <div>
-                            <img src="/carousalpic2.png" alt="carousel 2" style={{ objectFit: 'cover', maxHeight: 500 }} />
-                        </div>
-                        <div>
-                        <img src="/carousalpic3.png" alt="carousel 3" style={{ objectFit: 'cover', maxHeight: 500 }} />
-                        </div>
-                    </Carousel>                 
-                </Grid>
-                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <SignupComponent/>
-                </Grid>
-            </Grid>
-            </Paper>
-        </Box>
+        <Card sx={{ minWidth: "60%", padding: 3 }}>
+        <Grid container spacing={2} textAlign={"center"}>
+          <Grid item xs={12}>
+            <Typography variant="h5" gutterBottom sx={{fontWeight: 700, color: "#2E3192"}}>
+              Register
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Stack spacing={2}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Signup Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Signup Type"
+              >
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField id="outlined-basic" label="Last Name" variant="outlined" fullWidth />
+            <TextField id="outlined-basic" label="Phone Number" variant="outlined" fullWidth />
+            <TextField id="outlined-basic" label="Password" variant="outlined" fullWidth type="password" />
+          </Stack>
+          </Grid>
+          <Grid item xs={6}>
+            <Stack spacing={2}>
+              <TextField id="outlined-basic" label="First Name" variant="outlined" fullWidth />
+              <TextField id="outlined-basic" label="Email ID" variant="outlined" fullWidth />
+              <TextField id="outlined-basic" label="User Name" variant="outlined" fullWidth />
+              <TextField id="outlined-basic" label="Confirm Password" variant="outlined" fullWidth type="password" />
+            </Stack>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} textAlign={"center"} sx={{marginTop: 3}}>
+          <Grid item xs={12}>
+            <Button variant="contained">Submit</Button>
+          </Grid>
+        </Grid>
+        </Card>
       </Box>
     );
   }

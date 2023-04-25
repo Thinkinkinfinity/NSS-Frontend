@@ -40,7 +40,9 @@ export interface IProgramOfficerDashboardProps {
 
 export interface IProgramOfficerDashboardState {
   open: boolean,
+  requsr: any
 }
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class ProgramOfficerDashboard extends React.Component<IProgramOfficerDashboardProps, IProgramOfficerDashboardState> {
   constructor(props: IProgramOfficerDashboardProps) {
@@ -48,9 +50,33 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
 
     this.state = {
       open: false,
+      requsr: []
     }
   }
+  public componentDidMount() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/programOfficer/studentList/', {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const rowdata:any = [];
+        const filteredResponse = data.data.filter((obj:any) => {
+          if (obj.status === 'pending') {
+            rowdata.push(obj)
+          }
+          return obj.status === 'pending';
+        });
+        console.log(rowdata)
 
+        this.setState({ requsr: rowdata });
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
   public render() {
   const handleOpen = () => {
     this.setState({ open: true });
@@ -58,6 +84,35 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
   
   const handleClose = () => {
     this.setState({ open: false });
+  }
+  
+  const handleapprove = (id:any) => {
+    console.log(id)
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    
+    var raw = JSON.stringify({
+      "studentId": [
+        {
+          "id": id
+        }
+      ],
+      "status": "Approved"
+    });
+
+    fetch("http://127.0.0.1:8000/programOfficer/approval/", {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    })
+      .then(response => response.text())
+      .then(result => {
+        console.log(result);
+        window.location.reload();
+      })
+      .catch(error => console.log('error', error));
   }
     return (
       <Box>
@@ -161,15 +216,15 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
                 Registration Approvals
               </Typography>
               <List>
-              {Array.from({ length: 5 }).map((_, index) => (
+              {this.state.requsr.map((item:any) => (
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
                       <Avatar alt="Remy Sharp" src="/1.jpeg" />
                     </ListItemIcon>
-                    <ListItemText primary="AKSHAYA" />
+                    <ListItemText primary={item.firstName+" "+item.lastName} />
                     <ListItemIcon>
-                    <Button variant="contained" color="success" sx={{marginRight: 2}}>
+                    <Button variant="contained" color="success" sx={{marginRight: 2}} onClick={() => handleapprove(item.id)}>
                       Approve
                     </Button>
                     <Button variant="outlined" color="error">

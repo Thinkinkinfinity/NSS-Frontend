@@ -44,12 +44,10 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
   };
 
   private handleLogin = () => {
-    // Add your login logic here
-    console.log(this.state);
     const url = 'http://127.0.0.1:8000/auth/login/';
     const data = {
-      username: 'rohit',
-      password: 'password'
+      username: this.state.username,
+      password: this.state.password
     };
     const options = {
       method: 'POST',
@@ -63,6 +61,10 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
       .then(response => response.json())
       .then(data => {
         console.log(data)
+        localStorage.setItem('access', data.access.toString());
+        localStorage.setItem('refresh', data.refresh.toString());
+        localStorage.setItem('userType', data.userType.toString());
+        localStorage.setItem('userId', data.userId.toString());
         this.props.setIsLoggedIn(true);
       })
       .catch(error => console.error(error));
@@ -92,9 +94,10 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
             onChange={this.handleLoginTypeChange}
             value={this.state.loginType}
           >
-            <MenuItem value="nibcid officer">nibcid officer</MenuItem>
-            <MenuItem value="student">student</MenuItem>
-            <MenuItem value="Program Officer">Program Officer</MenuItem>
+            <MenuItem value="ProgramOfficers">Program Officers</MenuItem>
+            <MenuItem value="Students">Student</MenuItem>
+            <MenuItem value="NibcidOfficers">Nibcid Officers</MenuItem>
+            <MenuItem value="NssCoordinators">Nss Co-ordinators</MenuItem>
           </Select>
         </FormControl>
         <TextField fullWidth label="Username" variant="outlined" sx={{ mb: 2 }} value={this.state.username} onChange={this.handleUsernameChange} />
@@ -113,7 +116,7 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
             Forgot Password?
           </MuiLink>
         </Box>
-        <Button component={Link} to="/some-where" variant="contained" color="error" fullWidth onClick={this.handleLogin} sx={{ mb: 2, width: '70%' }}>
+        <Button component={Link} to="/" variant="contained" color="error" fullWidth onClick={this.handleLogin} sx={{ mb: 2, width: '70%' }}>
           Login
         </Button>
         <Typography variant="body1" sx={{ fontSize: 14 }}>

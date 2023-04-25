@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.scss';
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate,useNavigate } from "react-router-dom";
 import MiniDrawer from './components/sidebar.component';
 import Dashboard from './pages/dashboard.page';
 import InstitutionPage from './pages/institution.page';
@@ -15,11 +15,23 @@ import MyProfilePage from './pages/my-profile.page';
 import ActivityUpdatePage from './pages/activity-update.page';
 import MyUploadsPage from './pages/my-uploads.page';
 import CertificatePage from './pages/certificate.page';
+import StudentRegisterPage from './pages/student-register.page';
+
 class App extends React.Component {
   state = {
-    isLoggedIn: true
+    // isLoggedIn: false
+    isLoggedIn: localStorage.getItem('isLoggedIn') === 'true' || false
   };
-
+  componentDidUpdate(prevProps:any, prevState:any, snapshot:any){
+    // Update the localStorage whenever the state changes
+    if (this.state.isLoggedIn !== prevState.isLoggedIn) {
+      this.setState({ isLoggedIn: this.state.isLoggedIn });
+      localStorage.setItem('isLoggedIn', this.state.isLoggedIn.toString());
+    }
+    // if (this.state.isLoggedIn == true) {
+    //   window.location.href = "/"
+    // }
+  }
   render() {
     return(
     <BrowserRouter>
@@ -37,13 +49,15 @@ class App extends React.Component {
             <Route path="/activity" element={<ActivityUpdatePage/>} />
             <Route path="/uploads" element={<MyUploadsPage/>} />
             <Route path="/certificate" element={<CertificatePage/>} />
+            <Route path="/*" element={<Navigate to="/" />} />
           </Route>
         </Routes>
       ) : (
         <Routes>
           <Route path="/login" element={<LoginPage setIsLoggedIn={(value) => this.setState({ isLoggedIn: value })} />} />
           <Route path="/sign-up" element={<SignUpPage />} />
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/register" element={<StudentRegisterPage />} />
+          <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>
       )}
     </BrowserRouter>

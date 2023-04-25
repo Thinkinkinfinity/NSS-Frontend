@@ -142,6 +142,16 @@ export default function MiniDrawer() {
   const [open, setOpen] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+  let menulist: Array<any> = []
+  if (localStorage.getItem('userType') == "ProgramOfficers") {
+    menulist = ProgramOfficermenuContent
+  }
+  else if (localStorage.getItem('userType') == "Students") {
+    menulist = StudentmenuContent
+  }
+  else if (localStorage.getItem('userType') == "NibcidOfficers") {
+    menulist = menuContent
+  }
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -153,7 +163,14 @@ export default function MiniDrawer() {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
+  const handleClick = (event: any) => {
+    // setAnchorElUser(event.currentTarget);
+    console.log(event)
+    if (event.target.innerText == "Logout") {
+      localStorage.clear()
+      window.location.href = "/"
+    }
+  };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -209,7 +226,7 @@ export default function MiniDrawer() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleClick} id={setting}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -264,7 +281,7 @@ export default function MiniDrawer() {
         <List
           sx={{ backgroundColor: "#001A49", color: "white", height: "inherit" }}
         >
-          {menuContent.map((text, index) => (
+          {menulist.map((text, index) => (
             <ListItem key={text.name} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 href={text.link}

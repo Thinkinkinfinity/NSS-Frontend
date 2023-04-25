@@ -16,11 +16,17 @@ export default class Dashboard extends React.Component<IAppProps, IAppState> {
     this.state = {
     }
   }
+
   public render() {
-    return (
-      <div>
-        <NibCidOfficersDashboard/>
-      </div>
-    );
+    if (localStorage.getItem('userType') == "ProgramOfficers") {
+      return (<ProgramOfficerDashboard/>)
+    }
+    else if (localStorage.getItem('userType') == "Students") {
+      return (<StudentsDashboard/>)
+    }
+    else if (localStorage.getItem('userType') == "NibcidOfficers") {
+      return (<NibCidOfficersDashboard/>)
+
+    }
   }
 }

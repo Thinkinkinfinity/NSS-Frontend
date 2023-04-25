@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
@@ -7,25 +7,65 @@ export interface IAddEventFormProps {
 }
 
 export interface IAddEventFormState {
+    eventType: any,
+    eventName: any,
+    eventDate: any,
+    eventLocation: any,
+    eventDescription: any,
+    eventParticipantType: any
 }
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export default class AddEventForm extends React.Component<IAddEventFormProps, IAddEventFormState> {
   constructor(props: IAddEventFormProps) {
     super(props);
 
     this.state = {
+        eventType: "",
+        eventName: "",
+        eventDate: "",
+        eventLocation: "",
+        eventDescription: "",
+        eventParticipantType: ""
     }
   }
-  handleChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    
+  handleSelectChange = (event: SelectChangeEvent) => {
+    const  value = event.target.value;
+    this.setState((prevState) => ({
+        ...prevState,
+        ["eventParticipantType"]: value
+    }));
   };
-
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [id]: value
+    }));
+  }
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    // Use the formData object to make API call or perform other operations
-    console.log(formData.get('username')); 
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     
+    var formdata = new FormData();
+    formdata.append("eventType", this.state.eventType);
+    formdata.append("eventName", this.state.eventName);
+    formdata.append("eventDate", this.state.eventDate);
+    formdata.append("eventLocation", this.state.eventLocation);
+    formdata.append("eventDescription", this.state.eventDescription);
+    
+    fetch(BACKEND_URL+'/programOfficer/event/', {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log(result)
+        window.location.reload()
+        })
+      .catch(error => console.log('error', error));
   };
 
   public render() {
@@ -34,27 +74,27 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
         <Typography variant="h6" gutterBottom>
         Add Student
         </Typography>
-        <form>
+        <form onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={6}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Event Name"
-                        name="eventname"
+                        name="eventName"
+                        id='eventName'
                         size="small"
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Event Date"
                         name="eventdate"
                         size="small"
+                        id='eventDate'
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -62,12 +102,12 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Event Description"
                         name="eventdescription"
                         size="small"
+                        id='eventDescription'
                         multiline
                         rows={4}
                         onChange={this.handleChange}
@@ -77,23 +117,23 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
             <Grid container spacing={2}>
                 <Grid item xs={6}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Location"
-                        name="eventname"
+                        name="eventLocation"
                         size="small"
+                        id='eventLocation'
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Event Type"
                         name="eventtype"
                         size="small"
+                        id='eventType'
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -101,7 +141,6 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
             <Grid container spacing={2}>
                 <Grid item xs={6}>
                     <TextField
-                        required
                         fullWidth
                         margin="normal"
                         label="Service Hours"
@@ -111,18 +150,24 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        required
-                        fullWidth
-                        margin="normal"
-                        label="Partcipant Type"
-                        name="partcipanttype"
-                        size="small"
-                        onChange={this.handleChange}
-                    />
+                    <FormControl fullWidth sx={{marginTop: 2}}>
+                        <InputLabel id="signup-type">Signup Type</InputLabel>
+                        <Select
+                            labelId="partcipanttype"
+                            id="partcipanttype"
+                            label="Partcipant Type"
+                            onChange={this.handleSelectChange}
+                            defaultValue={"EventOrganizer"}
+                            value={this.state.eventParticipantType}
+                            size="small"
+                        >
+                            <MenuItem value={"EventOrganizer"}>Event Organizer</MenuItem>
+                            <MenuItem value={"onlyparticipant"}>Only Participant</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
-            <Button variant="contained" color="primary" type="submit" size="small" 
+            <Button variant="contained" color="primary" size="small" type="submit"
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',

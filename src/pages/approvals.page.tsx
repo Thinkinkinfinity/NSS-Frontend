@@ -167,8 +167,8 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
 
   public componentDidMount() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxOTk0OTU2LCJpYXQiOjE2ODE5OTMxNTYsImp0aSI6IjNiN2M3MGJmYWU5NTQ2OGI4NzVlOTdjYmQ4ZTM4YmJjIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJ5b2tlc2giLCJ1c2VySWQiOjMsImVtYWlsIjoieW9rZXNoQGdtYWlsLmNvbSIsInVzZXJUeXBlIjoiUHJvZ3JhbU9mZmljZXJzIiwic3RhdHVzIjoyMDB9.d1X124bKCxPFv7N162_kt--lj3OhtE-Tg-I3zEMpeOc");
-    fetch('http://localhost:8000/programOfficer/studentList/', {
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/programOfficer/studentEventApprovalList/', {
       method: 'GET',
       headers: myHeaders,
     })
@@ -180,12 +180,11 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
           const element = data.data[i];
           const rowobj = { 
                             id: i+1, 
-                            student_name: element.firstName+" "+element.lastName,
+                            student_name: element.studentName,
                             student_id: element.studentId,
                             no_of_hrs_completed: element.noOfHrsCompleted,
                             no_of_events_completed: element.noOfEventParticipated,
-                            status: element.phoneNumber,
-
+                            status: element.status,
                           }
           rowdata.push(rowobj);
         }
