@@ -28,7 +28,6 @@ export interface IStudentRegisterPageState {
 }
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const BACKEND_TOKEN = process.env.REACT_APP_BACKEND_TOKEN;
 
 export default class StudentRegisterPage extends React.Component<
   IStudentRegisterPageProps,

@@ -172,8 +172,6 @@ const style = {
   p: 4,
 };
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const BACKEND_TOKEN = process.env.REACT_APP_BACKEND_TOKEN;
-
 
 export default class StudentPage extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
