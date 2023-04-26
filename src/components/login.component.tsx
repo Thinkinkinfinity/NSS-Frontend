@@ -13,6 +13,7 @@ interface ILoginFormState {
   password: string;
   rememberMe: boolean;
 }
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
   constructor(props: ILoginFormProps) {
@@ -44,7 +45,7 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
   };
 
   private handleLogin = () => {
-    const url = 'http://127.0.0.1:8000/auth/login/';
+    const url = BACKEND_URL+'/auth/login/';
     const data = {
       username: this.state.username,
       password: this.state.password

@@ -10,6 +10,7 @@ type SignupFormState = {
   phoneNumber: string;
   userType: string;
 };
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 class SignupComponent extends Component<{}, SignupFormState> {
   constructor(props: {}) {
@@ -49,7 +50,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
         "userType": "NibcidOfficers"
       });
     try {
-        const response = await fetch('http://127.0.0.1:8000/auth/register/', {
+        const response = await fetch(BACKEND_URL+'/auth/register/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

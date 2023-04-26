@@ -35,6 +35,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
 export interface IProgramOfficerDashboardProps {
 }
 
@@ -101,7 +102,7 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
       "status": "Approved"
     });
 
-    fetch("http://127.0.0.1:8000/programOfficer/approval/", {
+    fetch(BACKEND_URL+"/programOfficer/approval/", {
       method: 'POST',
       headers: myHeaders,
       body: raw,
