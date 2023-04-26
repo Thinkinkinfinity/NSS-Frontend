@@ -5,13 +5,15 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 export interface IActivityUpdateFormProps {
-
+    objData: any
 }
 
 export interface IActivityUpdateFormState {
     selectedFiles: Array<any>,
-    // objData: any
+    objData: any
 }
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class ActivityUpdateForm extends React.Component<IActivityUpdateFormProps, IActivityUpdateFormState> {
   constructor(props: IActivityUpdateFormProps) {
@@ -19,6 +21,7 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
 
     this.state = {
         selectedFiles: [],
+        objData: {}
     }
   }
   handleChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
@@ -27,21 +30,45 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
   handleFileChange = (event: any) => {
     console.log(event.target.files)
     const files = event.target.files;
-    const fileNames = Array.from(files as FileList).map((file) => file.name);
-  this.setState({ selectedFiles: fileNames });
+    // const fileNames = Array.from(files as FileList).map((file) => file.name);
+  this.setState({ selectedFiles: files });
   };
 
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    // Use the formData object to make API call or perform other operations
-    console.log(formData.get('username')); 
+    const userid = localStorage.getItem('userId')
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     
+    var formdata = new FormData();
+    // Loop through the selected files and append them to the FormData object
+    for (let i = 0; i < this.state.selectedFiles.length; i++) {
+        formdata.append('eventImages', this.state.selectedFiles[i]);
+    }
+
+    // Add other form data values to the FormData object
+    formdata.append('userId', userid ? userid : '');
+    formdata.append('eventId', this.props.objData.id);
+
+    fetch(BACKEND_URL+"/student/studentEvent/", {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log(result);
+        window.location.reload();
+        })
+      .catch(error => console.log('error', error));    
   };
-  
+  componentDidMount(): void {
+    //   console.log(this.props.objData)
+  }
   public render() {
     return (
-        <form>
+        <form onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={6}>
                     <TextField
@@ -51,6 +78,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         label="Event Name"
                         name="eventname"
                         size="small"
+                        disabled
+                        value={this.props.objData.eventName}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -62,6 +91,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         label="Event Date"
                         name="eventdate"
                         size="small"
+                        disabled
+                        value={this.props.objData.eventDate}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -76,6 +107,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         name="eventdescription"
                         size="small"
                         multiline
+                        disabled
+                        value={this.props.objData.eventDescription}
                         rows={4}
                         onChange={this.handleChange}
                     />
@@ -90,6 +123,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         label="Location"
                         name="eventname"
                         size="small"
+                        disabled
+                        value={this.props.objData.eventLocation}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -101,6 +136,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         label="Event Type"
                         name="eventtype"
                         size="small"
+                        disabled
+                        value={this.props.objData.eventType}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -114,6 +151,8 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         label="Service Hours"
                         name="servicehours"
                         size="small"
+                        disabled
+                        value={this.props.objData.eventServiceHrs}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -122,9 +161,11 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                         required
                         fullWidth
                         margin="normal"
-                        label="Partcipant type"
-                        name="servicehours"
+                        label="Participant type"
+                        name="participant_type"
                         size="small"
+                        disabled
+                        value={this.props.objData.participantType}
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -138,9 +179,9 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                                 <PhotoCamera />
                             </IconButton>
                         </label>
-                        {this.state.selectedFiles.length > 0 && (
+                        {/* {this.state.selectedFiles.length > 0 && (
                         <p style={{fontSize: 7}}>Selected files: {this.state.selectedFiles.join(', ')}</p>
-                        )}
+                        )} */}
                     </div>
                 </Grid>
             </Grid>

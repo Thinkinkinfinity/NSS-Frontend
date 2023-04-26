@@ -107,7 +107,7 @@ export default class ActivityUpdatePage extends React.Component<
               </Typography>
               <List>
                 {this.state.upcoming_activity.map((item:any) => (
-                  <ListItem disablePadding>
+                  <ListItem disablePadding key={item.id}>
                     <ListItemButton>
                       <ListItemIcon>
                         <Avatar alt="Remy Sharp" src="/image3.png" />
@@ -130,7 +130,7 @@ export default class ActivityUpdatePage extends React.Component<
               </Typography>
               <List>
               {this.state.completed_activity.map((item:any) => (
-                  <ListItem disablePadding>
+                  <ListItem disablePadding key={item.id}>
                     <ListItemButton>
                       <ListItemIcon>
                         <Avatar alt="Remy Sharp" src="/image3.png" />
@@ -159,7 +159,7 @@ export default class ActivityUpdatePage extends React.Component<
             aria-describedby="modal-modal-description"
         >
             <Box  sx={style}>
-                <ActivityUpdateForm/>
+                <ActivityUpdateForm objData={this.state.current_obj}/>
             </Box>
         </Modal>
         <Modal
