@@ -64,6 +64,7 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
         console.log(data)
         localStorage.setItem('access', data.access.toString());
         localStorage.setItem('refresh', data.refresh.toString());
+        localStorage.setItem('expires_at', data.expires_at.toString());
         localStorage.setItem('userType', data.userType.toString());
         localStorage.setItem('userId', data.userId.toString());
         this.props.setIsLoggedIn(true);

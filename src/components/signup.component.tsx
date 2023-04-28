@@ -36,10 +36,6 @@ class SignupComponent extends Component<{}, SignupFormState> {
 
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    // Use the formData object to make API call or perform other operations
-    console.log(formData.get('username')); 
-    console.log(Object.fromEntries(formData));
     var raw = JSON.stringify({
         "username": "rohit",
         "email": "rohit@gmail.com",
@@ -86,6 +82,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             margin="normal"
             label="Username"
             name="username"
+            id='username'
             value={username}
             size="small"
             onChange={this.handleChange}
@@ -98,6 +95,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             name="email"
             value={email}
             size="small"
+            id='email'
             onChange={this.handleChange}
           />
           <TextField
@@ -107,6 +105,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             label="Password"
             type="password"
             name="password"
+            id="password"
             size="small"
             value={password}
             onChange={this.handleChange}
@@ -117,6 +116,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             margin="normal"
             label="First Name"
             name="firstName"
+            id="firstName"
             value={firstName}
             size="small"
             onChange={this.handleChange}
@@ -127,6 +127,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             margin="normal"
             label="Last Name"
             name="lastName"
+            id="lastName"
             value={lastName}
             size="small"
             onChange={this.handleChange}
@@ -137,6 +138,7 @@ class SignupComponent extends Component<{}, SignupFormState> {
             margin="normal"
             label="Phone Number"
             name="phoneNumber"
+            id="phoneNumber"
             value={phoneNumber}
             size="small"
             onChange={this.handleChange}

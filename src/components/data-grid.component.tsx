@@ -77,6 +77,9 @@ export default class ListView extends React.Component<IListViewProps, IListViewS
     const onFilterChange = (dasd:any) => {
       console.log(dasd)
     };
+    const handleEvent = (event:any) => {
+      console.log(event)
+    }
     return (
         <div style={{ height: '70vh', width: '100%' }} className='data-grid-container'>
             <StripedDataGrid 
@@ -100,6 +103,7 @@ export default class ListView extends React.Component<IListViewProps, IListViewS
             //     },
 
             // }}
+            onRowClick={handleEvent}
             onFilterModelChange={onFilterChange}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

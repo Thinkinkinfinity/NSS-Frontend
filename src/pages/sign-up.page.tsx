@@ -14,7 +14,17 @@ import Button from '@mui/material/Button'
 
 export interface ISignupPageProps {}
 
-export interface ISignupPageState {}
+export interface ISignupPageState {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  userType: string;
+  institutionId: string
+}
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default class SignupPage extends React.Component<
   ISignupPageProps,
@@ -23,10 +33,75 @@ export default class SignupPage extends React.Component<
   constructor(props: ISignupPageProps) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      username: '',
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      userType: 'NibcidOfficers',
+      institutionId: ''
+    };
   }
+  handleChange = (event: React.ChangeEvent<HTMLInputElement | { id?: string; value: unknown }>) => {
+    const { id, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [id!]: value,
+    }));
+  };
+  handleSelectChange = (event: SelectChangeEvent) => {
+    if (event.target.value == "Students") {
+      window.location.href = "/register"
+    }
+  };
+  handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (this.state.userType == "ProgramOfficers") {
+      var raw = JSON.stringify({
+        "username": this.state.username,
+        "email": this.state.email,
+        "password": this.state.password,
+        "firstName": this.state.firstName,
+        "lastName": this.state.lastName,
+        "phoneNumber": this.state.phoneNumber,
+        "userType": this.state.userType,
+        "institutionId": this.state.institutionId
+      });
+    } else {
+      var raw = JSON.stringify({
+        "username": this.state.username,
+        "email": this.state.email,
+        "password": this.state.password,
+        "firstName": this.state.firstName,
+        "lastName": this.state.lastName,
+        "phoneNumber": this.state.phoneNumber,
+        "userType": this.state.userType
+      });
+    }
+    
+    try {
+        const response = await fetch(BACKEND_URL+'/auth/register/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: raw
+        });
+    
+        const data = await response.json();
+        console.log(data); // do something with the response data
+        window.location.reload();
+      } catch (error) {
+        alert(error);
+      }
+    
+  };
 
   public render() {
+    const { username, email, password, firstName, lastName, phoneNumber, userType } = this.state;
+
     return (
       <Box
         sx={{
@@ -45,40 +120,47 @@ export default class SignupPage extends React.Component<
             </Typography>
           </Grid>
         </Grid>
+        <form onSubmit={this.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Stack spacing={2}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Signup Type</InputLabel>
+              <InputLabel id="signup-type">Signup Type</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
+                labelId="userType"
+                id="userType"
                 label="Signup Type"
+                defaultValue={"NibcidOfficers"}
+                onChange={this.handleSelectChange}
+                value={userType}
               >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value={"ProgramOfficers"}>Program Officers</MenuItem>
+                <MenuItem value={"Students"}>Student</MenuItem>
+                <MenuItem value={"NibcidOfficers"}>Nibcid Officers</MenuItem>
+                <MenuItem value={"NssCoordinators"}>Nss Co-ordinators</MenuItem>
               </Select>
             </FormControl>
-            <TextField id="outlined-basic" label="Last Name" variant="outlined" fullWidth />
-            <TextField id="outlined-basic" label="Phone Number" variant="outlined" fullWidth />
-            <TextField id="outlined-basic" label="Password" variant="outlined" fullWidth type="password" />
+            <TextField id="firstName" label="First Name" variant="outlined" fullWidth onChange={this.handleChange} />
+            <TextField id="phoneNumber" label="Phone Number" variant="outlined" fullWidth onChange={this.handleChange} />
+            <TextField id="password" label="Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
+            <TextField id="institutionId" label="Institution Id" variant="outlined" fullWidth onChange={this.handleChange} />
           </Stack>
           </Grid>
           <Grid item xs={6}>
             <Stack spacing={2}>
-              <TextField id="outlined-basic" label="First Name" variant="outlined" fullWidth />
-              <TextField id="outlined-basic" label="Email ID" variant="outlined" fullWidth />
-              <TextField id="outlined-basic" label="User Name" variant="outlined" fullWidth />
-              <TextField id="outlined-basic" label="Confirm Password" variant="outlined" fullWidth type="password" />
+              <TextField id="email" label="Email ID" variant="outlined" fullWidth onChange={this.handleChange} />
+              <TextField id="lastName" label="Last Name" variant="outlined" fullWidth onChange={this.handleChange} />
+              <TextField id="username" label="User Name" variant="outlined" fullWidth onChange={this.handleChange} />
+              <TextField id="confirmPassword" label="Confirm Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
             </Stack>
           </Grid>
         </Grid>
         <Grid container spacing={2} textAlign={"center"} sx={{marginTop: 3}}>
           <Grid item xs={12}>
-            <Button variant="contained">Submit</Button>
+            <Button variant="contained" type="submit">Submit</Button>
           </Grid>
         </Grid>
+        </form>
         </Card>
       </Box>
     );

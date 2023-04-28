@@ -11,21 +11,30 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import Icon from '@mui/material/Icon';
+import { Button } from '@mui/material';
+import Modal from "@mui/material/Modal";
+import EventApprovalForm from '../components/event-approval-form.component';
+
 export interface IAppProps {
 }
 
 export interface IAppState {
   rows: GridRowsProp
+  open: boolean
+  objData: any
 }
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '50%',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: '#', width: 30, headerClassName: 'super-app-theme--header' },
-  { field: 'student_name', headerName: 'Student Name', width: 150, headerClassName: 'super-app-theme--header' },
-  { field: 'student_id', headerName: 'Student ID', width: 150, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_hrs_completed', headerName: 'Number of hrs completed', width: 200, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_events_completed', headerName: 'No of events participated', width: 200, headerClassName: 'super-app-theme--header' },
-  { field: 'status', headerName: 'Status', width: 150, headerClassName: 'super-app-theme--header' },
-];
 const top100Films = [
   { label: 'The Shawshank Redemption', year: 1994 },
   { label: 'The Godfather', year: 1972 },
@@ -160,7 +169,9 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
     super(props);
 
     this.state = {
-      rows: []
+      rows: [],
+      open: false,
+      objData: 1
     }
   }
 
@@ -184,6 +195,7 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
                             no_of_hrs_completed: element.noOfHrsCompleted,
                             no_of_events_completed: element.noOfEventParticipated,
                             status: element.status,
+                            api_id: element.id
                           }
           rowdata.push(rowobj);
         }
@@ -195,11 +207,55 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
   }
 
   public render() {
+    const handleClose = () => {
+      this.setState({ open: false });
+    }
+  
+    const handleOpen = (id: any) => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+      fetch(BACKEND_URL+"/programOfficer/studentEventApproveViewList/"+id+"/", {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      })
+        .then(response => response.json())
+        .then(result => {
+          console.log(result)
+          this.setState({ objData: result.data });
+          this.setState({ open: true });
+        })
+        .catch(error => console.log('error', error));
+
+    }
+    
     const { rows } = this.state;
     const onPageChange = (params: any) => {
       console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
+    const columns: GridColDef[] = [
+      { field: 'id', headerName: '#', width: 30, headerClassName: 'super-app-theme--header' },
+      { field: 'student_name', headerName: 'Student Name', width: 150, headerClassName: 'super-app-theme--header' },
+      { field: 'student_id', headerName: 'Student ID', width: 150, headerClassName: 'super-app-theme--header' },
+      { field: 'no_of_hrs_completed', headerName: 'Number of hrs completed', width: 200, headerClassName: 'super-app-theme--header' },
+      { field: 'no_of_events_completed', headerName: 'No of events participated', width: 200, headerClassName: 'super-app-theme--header' },
+      { field: 'status', headerName: 'Status', width: 150, headerClassName: 'super-app-theme--header' },
+      {
+        field: "action",
+        headerName: "Action",
+        sortable: false,
+        renderCell: (params) => {
+          const { api_id } = params.row;
+          return <Button onClick={() => { handleOpen(api_id) }}>
+                    <img
+                      src={`/Vector(2).png`}
+                      loading="lazy"
+                    />
+                </Button>;
+        }
+      },
+    ];
     return (
       <Box>
         <Typography variant="h5" gutterBottom>
@@ -239,6 +295,16 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
           </Grid>
         </Grid>
         <ListView rows={rows} columns={columns} onPageChange={onPageChange} />
+        <Modal
+            open={this.state.open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box  sx={style}>
+              <EventApprovalForm objData={this.state.objData}/>
+            </Box>
+        </Modal>
       </Box>
     );
   }

@@ -22,15 +22,18 @@ class App extends React.Component {
     // isLoggedIn: false
     isLoggedIn: localStorage.getItem('isLoggedIn') === 'true' || false
   };
+    // Get current timestamp
+  currentTime = Math.floor(Date.now() / 1000);
+
+  // Get expires_at value from localStorage
+  expiresAt = localStorage.getItem('expires_at');
+
   componentDidUpdate(prevProps:any, prevState:any, snapshot:any){
     // Update the localStorage whenever the state changes
     if (this.state.isLoggedIn !== prevState.isLoggedIn) {
       this.setState({ isLoggedIn: this.state.isLoggedIn });
       localStorage.setItem('isLoggedIn', this.state.isLoggedIn.toString());
     }
-    // if (this.state.isLoggedIn == true) {
-    //   window.location.href = "/"
-    // }
   }
   render() {
     return(
