@@ -14,6 +14,7 @@ import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import LinearWithValueLabel from './progress-bar.component';
 
 const itemData = [
   {
@@ -81,8 +82,8 @@ export default class StudentsDashboard extends React.Component<IStudentsDashboar
         </Typography>
         <Grid container spacing={1}>
           <Grid item md={7}>
-              <Item style={{height:300, width:"100%" }}>
-                <LineChartComponent/>                
+              <Item style={{height:300, width:"100%", display: "flex", alignItems: "center" }}>
+                <LinearWithValueLabel/>          
               </Item>
           </Grid>
           <Grid item md={5}>

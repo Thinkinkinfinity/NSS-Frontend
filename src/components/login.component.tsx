@@ -8,7 +8,6 @@ interface ILoginFormProps {
 }
 
 interface ILoginFormState {
-  loginType: string;
   username: string;
   password: string;
   rememberMe: boolean;
@@ -20,16 +19,11 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
     super(props);
 
     this.state = {
-      loginType: '',
       username: '',
       password: '',
       rememberMe: false,
     };
   }
-
-  private handleLoginTypeChange = (event: SelectChangeEvent<unknown>) => {
-    this.setState({ loginType: event.target.value as string });
-  };
 
   private handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ username: event.target.value });
@@ -62,6 +56,18 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
       .then(response => response.json())
       .then(data => {
         console.log(data)
+
+        // If "Remember Me" checkbox is checked, store credentials in localStorage
+        if (this.state.rememberMe) {
+          localStorage.setItem('username', this.state.username);
+          localStorage.setItem('password', this.state.password);
+          localStorage.setItem('rememberMe', 'true');
+        } else {
+          localStorage.removeItem('username');
+          localStorage.removeItem('password');
+          localStorage.removeItem('rememberMe');
+        }
+
         localStorage.setItem('access', data.access.toString());
         localStorage.setItem('refresh', data.refresh.toString());
         localStorage.setItem('expires_at', data.expires_at.toString());
@@ -71,10 +77,24 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
       })
       .catch(error => console.error(error));
   };
+  componentDidMount() {
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    const username = rememberMe ? localStorage.getItem('username') || '' : '';
+    const password = rememberMe ? localStorage.getItem('password') || '' : '';
   
+    this.setState({ rememberMe, username, password });
+  }
+
+  private handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      this.handleLogin();
+    }
+  };
+
   public render() {
     return (
       <Box
+        onKeyDown={this.handleKeyPress}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -85,25 +105,10 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
         }}
       >
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Login As
+          Login
         </Typography>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="login-type-label">Login Type</InputLabel>
-          <Select
-            labelId="login-type-label"
-            id="login-type-select"
-            label="Login Type"
-            onChange={this.handleLoginTypeChange}
-            value={this.state.loginType}
-          >
-            <MenuItem value="ProgramOfficers">Program Officers</MenuItem>
-            <MenuItem value="Students">Student</MenuItem>
-            <MenuItem value="NibcidOfficers">Nibcid Officers</MenuItem>
-            <MenuItem value="NssCoordinators">Nss Co-ordinators</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField fullWidth label="Username" variant="outlined" sx={{ mb: 2 }} value={this.state.username} onChange={this.handleUsernameChange} />
-        <TextField fullWidth label="Password" variant="outlined" sx={{ mb: 2 }} type="password" value={this.state.password} onChange={this.handlePasswordChange} />
+        <TextField fullWidth label="Username" variant="outlined" sx={{ mb: 2 }} value={this.state.username} onChange={this.handleUsernameChange} onKeyDown={this.handleKeyPress} />
+        <TextField fullWidth label="Password" variant="outlined" sx={{ mb: 2 }} type="password" value={this.state.password} onChange={this.handlePasswordChange} onKeyDown={this.handleKeyPress} />
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <FormControlLabel
         control={<Checkbox />}

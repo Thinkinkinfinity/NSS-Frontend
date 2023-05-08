@@ -18,13 +18,15 @@ export interface IAppProps {
 export interface IAppState {
   rows: GridRowsProp
 }
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: '#', width: 30, headerClassName: 'super-app-theme--header' },
-  { field: 'institution_name', headerName: 'Institution Name', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_program_officers', headerName: 'No Of Program Officers', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_nss_volunteers', headerName: 'No Of NSS Volunteers', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_events_organized', headerName: 'No Of Events Organized', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'event_name', headerName: 'Event Name', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'event_date', headerName: 'Event Date', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'event_type', headerName: 'Event Type', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'event_location', headerName: 'Event Location', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'event_description', headerName: 'Event Description', width: 250, headerClassName: 'super-app-theme--header' },
 ];
 const top100Films = [
   { label: 'The Shawshank Redemption', year: 1994 },
@@ -162,16 +164,29 @@ export default class NewsGenerationPage extends React.Component<IAppProps, IAppS
   }
 
   public componentDidMount() {
-    fetch('https://dummyjson.com/products/1')
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/nibcidOfficer/eventList?page=1&page_size=20', {
+      method: 'GET',
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
-        data = [
-          { id: 1, institution_name: 'Hello', no_of_program_officers: '2',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 2, institution_name: 'DataGridPro', no_of_program_officers: 'is Awesome',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 3, institution_name: 'MUI', no_of_program_officers: 'is Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 4, institution_name: 'MUI', no_of_program_officers: 'is Not Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-        ];
-        this.setState({ rows: data });
+        console.log(data.data);
+        const rowdata:any = [];
+        for (let i = 0; i < data.data.length; i++) {
+          const element = data.data[i];
+          const rowobj = { 
+                            id: i+1, 
+                            event_name: element.eventName,
+                            event_date: element.eventDate,
+                            event_type: element.eventType,
+                            event_location: element.eventLocation,
+                            event_description: element.eventDescription,
+                          }
+          rowdata.push(rowobj);
+        }
+        this.setState({ rows: rowdata });
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -187,7 +202,7 @@ export default class NewsGenerationPage extends React.Component<IAppProps, IAppS
     return (
       <Box>
         <Typography variant="h5" gutterBottom>
-          Event Monitoring
+          Planned Events
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={8}>

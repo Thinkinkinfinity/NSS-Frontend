@@ -110,7 +110,9 @@ const menuContent = [
     link: "program-officers",
   },
   { name: "Students", icon: SchoolOutlinedIcon, link: "students" },
-  { name: "Event Monitoring", icon: FeedOutlinedIcon, link: "news-generation" },
+  { name: "Planned Events", icon: FeedOutlinedIcon, link: "news-generation" },
+  { name: "Photo Gallery", icon: FeedOutlinedIcon, link: "gallery" },
+  { name: "Event Completed", icon: SchoolOutlinedIcon, link: "events-completed" },
 ];
 
 const StudentmenuContent = [
@@ -133,6 +135,7 @@ const ProgramOfficermenuContent = [
     link: "approvals",
   },
   { name: "Event Planned", icon: SchoolOutlinedIcon, link: "events" },
+  { name: "Event Completed", icon: SchoolOutlinedIcon, link: "events-completed" },
 ];
 
 const menuId = 'primary-search-account-menu';
@@ -167,7 +170,12 @@ export default function MiniDrawer() {
     // setAnchorElUser(event.currentTarget);
     console.log(event)
     if (event.target.innerText == "Logout") {
-      localStorage.clear()
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('expires_at');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('isLoggedIn');
       window.location.href = "/"
     }
   };

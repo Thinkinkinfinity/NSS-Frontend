@@ -41,7 +41,8 @@ export interface IProgramOfficerDashboardProps {
 
 export interface IProgramOfficerDashboardState {
   open: boolean,
-  requsr: any
+  requsr: any,
+  institution_name: string
 }
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -51,13 +52,14 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
 
     this.state = {
       open: false,
-      requsr: []
+      requsr: [],
+      institution_name: ""
     }
   }
   public componentDidMount() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
-    fetch(BACKEND_URL+'/programOfficer/studentList/', {
+    fetch(BACKEND_URL+'/programOfficer/studentList?page=1&page_size=20', {
       method: 'GET',
       headers: myHeaders,
     })
@@ -77,6 +79,16 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
+    
+    fetch(BACKEND_URL+'/programOfficer/getofficerInstitution/', {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data.name)
+        this.setState({ institution_name: data.data.name });
+      })
   }
   public render() {
   const handleOpen = () => {
@@ -118,9 +130,14 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
     return (
       <Box>
       <Grid container spacing={1}>
-        <Grid item md={10} >
+        <Grid item md={5} >
           <Typography variant="h6" gutterBottom>
             Dashboard
+          </Typography>
+        </Grid>
+        <Grid item md={5} >
+          <Typography variant="h6" gutterBottom>
+            {this.state.institution_name}
           </Typography>
         </Grid>
         <Grid item md={2}>
@@ -131,18 +148,9 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
         <Grid item md={7} >
             <Grid container spacing={1}>
                 <Grid item md={12} sx={{height: 350}}>
-                    <PieChartComponent/>
-                </Grid>
-                <Grid item md={12} sx={{height: 350}}>
-                    <BarChartComponent/>
-                </Grid>
-            </Grid>
-        </Grid>
-        <Grid item md={5}>
-            <Grid container spacing={1}>
-                <Grid item md={12}>
+                    {/* <PieChartComponent/> */}
                   <List>
-                  <ListItem disablePadding>
+                    <ListItem disablePadding>
                       <ListItemButton>
                         <ListItemIcon>
                           <Icon>
@@ -151,7 +159,7 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
                               loading="lazy"
                             />
                           </Icon>
-                        </ListItemIcon>
+                        </ListItemIcon> 
                         <ListItemText primary="Number of students" />
                         <ListItemText primary="100" />
                       </ListItemButton>
@@ -170,35 +178,17 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
                         <ListItemText primary="50" />
                       </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <Icon>
-                            <img
-                              src={`/image70.png`}
-                              loading="lazy"
-                            />
-                          </Icon>
-                        </ListItemIcon>
-                        <ListItemText primary="Name of the institution" />
-                        <ListItemText primary="Anna University" />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <Icon>
-                            <img
-                              src={`/image70.png`}
-                              loading="lazy"
-                            />
-                          </Icon>
-                        </ListItemIcon>
-                        <ListItemText primary="Number of students entrolled" />
-                        <ListItemText primary="576854" />
-                      </ListItemButton>
-                    </ListItem>
                   </List>
+                </Grid>
+                <Grid item md={12} sx={{height: 350}}>
+                    <BarChartComponent/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid item md={5}>
+            <Grid container spacing={1}>
+                <Grid item md={12} sx={{height: 350}}>
+                  
                 </Grid>
                 <Grid item md={12}>
                     <BasicExampleDataGrid/>
@@ -218,7 +208,7 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
               </Typography>
               <List>
               {this.state.requsr.map((item:any) => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={item}>
                   <ListItemButton>
                     <ListItemIcon>
                       <Avatar alt="Remy Sharp" src="/1.jpeg" />

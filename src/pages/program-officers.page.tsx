@@ -21,10 +21,11 @@ export interface IAppState {
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: '#', width: 30, headerClassName: 'super-app-theme--header' },
+  { field: 'program_officer_name', headerName: 'Program Officer Name', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'unit_number', headerName: 'Unit Number', width: 250, headerClassName: 'super-app-theme--header' },
   { field: 'institution_name', headerName: 'Institution Name', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_program_officers', headerName: 'No Of Program Officers', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_nss_volunteers', headerName: 'No Of NSS Volunteers', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_events_organized', headerName: 'No Of Events Organized', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'no_of_students', headerName: 'No Of Students', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'no_of_events', headerName: 'No Of Events', width: 250, headerClassName: 'super-app-theme--header' },
 ];
 const top100Films = [
   { label: 'The Shawshank Redemption', year: 1994 },
@@ -152,6 +153,8 @@ const top100Films = [
   { label: '3 Idiots', year: 2009 },
   { label: 'Monty Python and the Holy Grail', year: 1975 },
 ];
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 export default class ProgramOfficers extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
@@ -162,16 +165,29 @@ export default class ProgramOfficers extends React.Component<IAppProps, IAppStat
   }
 
   public componentDidMount() {
-    fetch('https://dummyjson.com/products/1')
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/nibcidOfficer/programOfficerList?page=1&page_size=20&search=', {
+      method: 'GET',
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
-        data = [
-          { id: 1, institution_name: 'Hello', no_of_program_officers: '2',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 2, institution_name: 'DataGridPro', no_of_program_officers: 'is Awesome',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 3, institution_name: 'MUI', no_of_program_officers: 'is Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 4, institution_name: 'MUI', no_of_program_officers: 'is Not Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-        ];
-        this.setState({ rows: data });
+        console.log(data.data);
+        const rowdata:any = [];
+        for (let i = 0; i < data.data.length; i++) {
+          const element = data.data[i];
+          const rowobj = { 
+                            id: i+1, 
+                            program_officer_name: element.programOfficerName, 
+                            unit_number: element.unitNo,  
+                            institution_name: element.instutionName,  
+                            no_of_students: element.noOfStudents,
+                            no_of_events: element.noOfEvents 
+                          }
+          rowdata.push(rowobj);
+        }
+        this.setState({ rows: rowdata });
       })
       .catch((error) => {
         console.error('Error fetching data:', error);

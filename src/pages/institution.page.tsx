@@ -18,11 +18,12 @@ export interface IAppProps {
 export interface IAppState {
   rows: GridRowsProp
 }
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: '#', width: 30, headerClassName: 'super-app-theme--header' },
   { field: 'institution_name', headerName: 'Institution Name', width: 250, headerClassName: 'super-app-theme--header' },
-  { field: 'no_of_program_officers', headerName: 'No Of Program Officers', width: 250, headerClassName: 'super-app-theme--header' },
+  { field: 'no_of_program_officers', headerName: 'Number Of Program Officers', width: 250, headerClassName: 'super-app-theme--header' },
   { field: 'no_of_nss_volunteers', headerName: 'No Of NSS Volunteers', width: 250, headerClassName: 'super-app-theme--header' },
   { field: 'no_of_events_organized', headerName: 'No Of Events Organized', width: 250, headerClassName: 'super-app-theme--header' },
 ];
@@ -163,8 +164,8 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
 
   public componentDidMount() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxOTkzMDEyLCJpYXQiOjE2ODE5OTEyMTIsImp0aSI6Ijc3NTMwYTQyN2I2ZDQ5YWQ5YjExZWVjNjdmN2Q1ZDU3IiwidXNlcl9pZCI6MiwidXNlcm5hbWUiOiJyb2hpdCIsInVzZXJJZCI6MiwiZW1haWwiOiJyb2hpdEBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6Ik5pYmNpZE9mZmljZXJzIiwic3RhdHVzIjoyMDB9.mYf0p7sncT5S9NELGw1MIellLjpPNaDOVlimh2Ey9ZI");
-    fetch('http://localhost:8000/nss/institution/', {
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(BACKEND_URL+'/nibcidOfficer/institutionList?page=1&page_size=20&search=', {
       method: 'GET',
       headers: myHeaders,
     })
@@ -177,18 +178,12 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
           const rowobj = { 
                             id: i+1, 
                             institution_name: element.institutionName, 
-                            no_of_program_officers: '2',  
-                            no_of_nss_volunteers: '20',  
-                            no_of_events_organized: '222' 
+                            no_of_program_officers: element.noOfProgramOfficers,  
+                            no_of_nss_volunteers: element.noOfVolunteers,  
+                            no_of_events_organized: element.eventList 
                           }
           rowdata.push(rowobj);
         }
-        data = [
-          { id: 1, institution_name: 'Hello', no_of_program_officers: '2',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 2, institution_name: 'DataGridPro', no_of_program_officers: 'is Awesome',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 3, institution_name: 'MUI', no_of_program_officers: 'is Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 4, institution_name: 'MUI', no_of_program_officers: 'is Not Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-        ];
         this.setState({ rows: rowdata });
       })
       .catch((error) => {

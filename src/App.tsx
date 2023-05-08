@@ -16,7 +16,8 @@ import ActivityUpdatePage from './pages/activity-update.page';
 import MyUploadsPage from './pages/my-uploads.page';
 import CertificatePage from './pages/certificate.page';
 import StudentRegisterPage from './pages/student-register.page';
-
+import NibCidOfficerPhotoGallery from './pages/nib-cid-officer-photo-gallery.page';
+import EventsCompletedPage from './pages/events-completed.page';
 class App extends React.Component {
   state = {
     // isLoggedIn: false
@@ -52,6 +53,8 @@ class App extends React.Component {
             <Route path="/activity" element={<ActivityUpdatePage/>} />
             <Route path="/uploads" element={<MyUploadsPage/>} />
             <Route path="/certificate" element={<CertificatePage/>} />
+            <Route path="/gallery" element={<NibCidOfficerPhotoGallery/>} />
+            <Route path="/events-completed" element={<EventsCompletedPage/>} />
             <Route path="/*" element={<Navigate to="/" />} />
           </Route>
         </Routes>

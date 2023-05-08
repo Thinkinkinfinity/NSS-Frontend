@@ -28,7 +28,6 @@ const columns: GridColDef[] = [
   { field: 'event_name', headerName: 'Event Name', width: 200, headerClassName: 'super-app-theme--header' },
   { field: 'event_date', headerName: 'Event Date', width: 200, headerClassName: 'super-app-theme--header' },
   { field: 'event_type', headerName: 'Event Type', width: 200, headerClassName: 'super-app-theme--header' },
-  { field: 'service_hours', headerName: 'Service Hours', width: 200, headerClassName: 'super-app-theme--header' },
   { field: 'event_description', headerName: 'Event Description', width: 200, headerClassName: 'super-app-theme--header' },
   { field: 'location', headerName: 'Location', width: 200, headerClassName: 'super-app-theme--header' },
 ];
@@ -181,10 +180,29 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
     }
   }
 
-  public componentDidMount() {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    const userType = localStorage.getItem('userType');
+    let url = "";
+    if (userType == "ProgramOfficers") {
+      if (value.length > 0) {
+        url = BACKEND_URL+'/programOfficer/event?page=1&page_size=20&search='+value;
+      }
+      else{
+        url = BACKEND_URL+'/programOfficer/event?page=1&page_size=20';
+      }
+    }
+    else if (userType == "NibcidOfficers") {
+      if (value.length > 0) {
+        url = BACKEND_URL+'/nibcidOfficer/eventList?page=1&page_size=20&search='+value;
+      }
+      else{
+        url = BACKEND_URL+'/nibcidOfficer/eventList?page=1&page_size=20';
+      }
+    }
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
-    fetch(BACKEND_URL+'/programOfficer/event/', {
+    fetch(url, {
       method: 'GET',
       headers: myHeaders,
     })
@@ -192,25 +210,58 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
       .then((data) => {
         console.log(data.data);
         const rowdata:any = [];
-        for (let i = 0; i < data.data.length; i++) {
-          const element = data.data[i];
+        if(data.data.upcomingEvents){
+          for (let i = 0; i < data.data.upcomingEvents.length; i++) {
+            const element = data.data.upcomingEvents[i];
+            const rowobj = { 
+                            id: i+1, 
+                            event_name: element.eventName, 
+                            event_date: element.eventDate,  
+                            event_type: element.eventType,  
+                            event_description: element.eventDescription,
+                            location: element.eventLocation
+                            }
+            rowdata.push(rowobj);
+          }
+        }
+        this.setState({ rows: rowdata });
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+  public componentDidMount() {
+    const userType = localStorage.getItem('userType');
+    let url = "";
+    if (userType == "ProgramOfficers") {
+      url = BACKEND_URL+'/programOfficer/event?page=1&page_size=20';
+    }
+    else if (userType == "NibcidOfficers") {
+      url = BACKEND_URL+'/nibcidOfficer/eventList?page=1&page_size=20';
+    }
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    fetch(url, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        const rowdata:any = [];
+        for (let i = 0; i < data.data.upcomingEvents.length; i++) {
+          const element = data.data.upcomingEvents[i];
           const rowobj = { 
                             id: i+1, 
                             event_name: element.eventName, 
                             event_date: element.eventDate,  
                             event_type: element.eventType,  
-                            service_hours: element.eventServiceHrs,
                             event_description: element.eventDescription,
                             location: element.eventLocation
                           }
           rowdata.push(rowobj);
         }
-        data = [
-          { id: 1, institution_name: 'Hello', no_of_program_officers: '2',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 2, institution_name: 'DataGridPro', no_of_program_officers: 'is Awesome',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 3, institution_name: 'MUI', no_of_program_officers: 'is Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-          { id: 4, institution_name: 'MUI', no_of_program_officers: 'is Not Amazing',  no_of_nss_volunteers: '20',  no_of_events_organized: '222' },
-        ];
         this.setState({ rows: rowdata });
       })
       .catch((error) => {
@@ -234,31 +285,11 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
     return (
       <Box>
         <Typography variant="h5" gutterBottom>
-          Events
+          Upcoming Events
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={top100Films}
-            sx={{ width: '100%', marginBottom: 3, marginTop: 3 }}
-            renderInput={(params) => <TextField {...params} label="Search by Districts / Universities / Institution" />}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth sx={{ width: '100%', marginBottom: 3, marginTop: 3 }}>
-              <InputLabel id="demo-simple-select-label">Report Generation</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Report Generation"
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid item xs={11}>
+          <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Event Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
           <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>

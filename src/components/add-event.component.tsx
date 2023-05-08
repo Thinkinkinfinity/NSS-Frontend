@@ -2,7 +2,11 @@ import * as React from 'react';
 import { TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 export interface IAddEventFormProps {
 }
 
@@ -32,7 +36,7 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
     const  value = event.target.value;
     this.setState((prevState) => ({
         ...prevState,
-        ["eventParticipantType"]: value
+        ["eventType"]: value
     }));
   };
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +76,7 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
     return (
       <div>
         <Typography variant="h6" gutterBottom>
-        Add Student
+        Add Event
         </Typography>
         <form onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
@@ -83,20 +87,22 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
                         label="Event Name"
                         name="eventName"
                         id='eventName'
-                        size="small"
+                        required
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Event Date"
-                        name="eventdate"
-                        size="small"
-                        id='eventDate'
-                        onChange={this.handleChange}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DatePicker 
+                            defaultValue={dayjs(new Date())} 
+                            disablePast 
+                            sx={{width: "100%", marginTop: "15px"}} 
+                            onChange={(newValue) => {
+                                console.log(newValue?.format("YYYY-MM-DD"));
+                                this.setState({ eventDate: newValue?.format("YYYY-MM-DD") });
+                            }}
+                        />
+                    </LocalizationProvider>
                 </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -106,10 +112,10 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
                         margin="normal"
                         label="Event Description"
                         name="eventdescription"
-                        size="small"
                         id='eventDescription'
                         multiline
                         rows={4}
+                        required
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -121,53 +127,28 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
                         margin="normal"
                         label="Location"
                         name="eventLocation"
-                        size="small"
                         id='eventLocation'
+                        required
                         onChange={this.handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Event Type"
-                        name="eventtype"
-                        size="small"
-                        id='eventType'
-                        onChange={this.handleChange}
-                    />
-                </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Service Hours"
-                        name="servicehours"
-                        size="small"
-                        onChange={this.handleChange}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <FormControl fullWidth sx={{marginTop: 2}}>
-                        <InputLabel id="signup-type">Signup Type</InputLabel>
+                    <FormControl fullWidth sx={{marginTop: "15px"}}>
+                        <InputLabel id="demo-simple-select-label">Event Type</InputLabel>
                         <Select
-                            labelId="partcipanttype"
-                            id="partcipanttype"
-                            label="Partcipant Type"
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={this.state.eventType}
+                            label="Event Type"
                             onChange={this.handleSelectChange}
-                            defaultValue={"EventOrganizer"}
-                            value={this.state.eventParticipantType}
-                            size="small"
                         >
-                            <MenuItem value={"EventOrganizer"}>Event Organizer</MenuItem>
-                            <MenuItem value={"onlyparticipant"}>Only Participant</MenuItem>
+                            <MenuItem value={"Individual"}>Individual</MenuItem>
+                            <MenuItem value={"Group"}>Group</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
             </Grid>
-            <Button variant="contained" color="primary" size="small" type="submit"
+            <Button variant="contained" color="primary" type="submit"
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',

@@ -22,7 +22,8 @@ export interface ISignupPageState {
   lastName: string;
   phoneNumber: string;
   userType: string;
-  institutionId: string
+  institutionId: string;
+  unitId: string
 }
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -41,7 +42,8 @@ export default class SignupPage extends React.Component<
       lastName: '',
       phoneNumber: '',
       userType: 'NibcidOfficers',
-      institutionId: ''
+      institutionId: '',
+      unitId: ''
     };
   }
   handleChange = (event: React.ChangeEvent<HTMLInputElement | { id?: string; value: unknown }>) => {
@@ -54,6 +56,9 @@ export default class SignupPage extends React.Component<
   handleSelectChange = (event: SelectChangeEvent) => {
     if (event.target.value == "Students") {
       window.location.href = "/register"
+    }
+    else{
+      this.setState({userType: event.target.value})
     }
   };
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -152,6 +157,7 @@ export default class SignupPage extends React.Component<
               <TextField id="lastName" label="Last Name" variant="outlined" fullWidth onChange={this.handleChange} />
               <TextField id="username" label="User Name" variant="outlined" fullWidth onChange={this.handleChange} />
               <TextField id="confirmPassword" label="Confirm Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
+              <TextField id="unitId" label="Unit ID" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
             </Stack>
           </Grid>
         </Grid>
