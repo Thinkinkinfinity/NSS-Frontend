@@ -195,7 +195,7 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                     marginTop: '1rem',
                 }}
             >
-                Update
+                Attend
             </Button>
         </form>
     );

@@ -171,6 +171,7 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
   }
 
   public render() {
+    const userType = localStorage.getItem('userType');
     const { rows } = this.state;
     const onPageChange = (params: any) => {
       console.log(params);
@@ -202,9 +203,11 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
             </Icon>
           </Grid>
         </Grid>
+        {userType === 'ProgramOfficers' &&
         <Button variant="outlined" style={{marginBottom: 10}} onClick={() => {
           handleOpen()
         }}>Add Student</Button>
+        }
         <ListView rows={rows} columns={columns} onPageChange={onPageChange} />
         <Modal
         open={this.state.open}
