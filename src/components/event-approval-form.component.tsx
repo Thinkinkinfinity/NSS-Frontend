@@ -5,10 +5,16 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 export interface IEventApprovalFormProps {
-    objData: any
+    objData: any,
+    studentName: any,
+    studentId: any
 }
 
 export interface IEventApprovalFormState {
+    comments: any,
+    eventId: any,
+    noOfHrsCompleted: any,
+    studentId: any
 }
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,14 +23,51 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
   constructor(props: IEventApprovalFormProps) {
     super(props);
     this.state = {
+        comments: undefined,
+        eventId: undefined,
+        noOfHrsCompleted: undefined,
+        studentId: undefined
     }
   }
-  handleChange = (event: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-  };
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [id]: value
+    }));
+  }
   handleFileChange = (event: any) => {
   };
-  handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  };
+  handleSubmit = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    
+    var raw = JSON.stringify({
+        "eventId": this.props.objData[0].id,
+        "studentId": [
+          {
+            "id": this.props.studentId
+          }
+        ],
+        "status": "Approved",
+        "comments": this.state.comments,
+        "noOfHrsCompleted": parseInt(this.state.noOfHrsCompleted)
+      });
+    console.log(raw)
+      
+    fetch(BACKEND_URL+'/programOfficer/eventApproval/', {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log(result)
+        window.location.reload()
+        })
+      .catch(error => console.log('error', error));
+};
   componentDidMount(): void {
     console.log(this.props)
   }
@@ -36,10 +79,10 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
                     <Avatar alt="Remy Sharp" src="/1.jpeg"/>
                     <Stack spacing={0}>
                         <Typography variant="subtitle1" gutterBottom>
-                            Akshaya
+                            {this.props.studentName}
                         </Typography>
                         <Typography variant="caption" display="block" gutterBottom>
-                            ID NO : 00010170155318
+                            {this.props.objData[0].eventDate}
                         </Typography>
                     </Stack>
                 </Stack>
@@ -50,7 +93,7 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
                                 Activity Type
                             </Typography>
                             <Typography variant="caption" display="block" gutterBottom>
-                                Tree plantation is the process of planting trees
+                                {this.props.objData[0].eventType}
                             </Typography>
                         </Grid>
                         <Grid item md={12} >
@@ -58,7 +101,7 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
                                 Event Name
                             </Typography>
                             <Typography variant="caption" display="block" gutterBottom>
-                                Tree plantation is the process of planting trees
+                                {this.props.objData[0].eventName}
                             </Typography>
                         </Grid>
                         <Grid item md={12} >
@@ -66,24 +109,24 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
                                 Description
                             </Typography>
                             <Typography variant="caption" display="block" gutterBottom>
-                                Tree plantation is the process of planting trees in a designated area to improve the environment, promote ecological balance, and mitigate the effects of climate change. The process involves selecting appropriate species of trees, preparing the land, and planting the trees in a strategic manner. 
+                                {this.props.objData[0].eventDescription}
                             </Typography>
                         </Grid>
                         <Grid item md={12} >
                             
                         </Grid>
                         <Grid item md={12} >
-                            <TextField id="service_hours_rewarded" label="Service Hours Rewarded" variant="outlined" fullWidth />
+                            <TextField id="noOfHrsCompleted" label="Service Hours Rewarded" variant="outlined" fullWidth onChange={this.handleChange} />
                         </Grid>
                         <Grid item md={12} >
                         </Grid>
                         <Grid item md={12} >
-                            <TextField id="comments" label="Comments" variant="outlined" fullWidth multiline rows={4} />
+                            <TextField id="comments" label="Comments" variant="outlined" fullWidth multiline rows={4} onChange={this.handleChange} />
                         </Grid>
                         <Grid item md={12} >
                         </Grid>
                         <Grid item md={12} textAlign={"center"}>
-                            <Button variant="contained" color="success">Approve</Button>
+                            <Button variant="contained" color="success" onClick={this.handleSubmit}>Approve</Button>
                         </Grid>
                     </Grid> 
                 </Stack>

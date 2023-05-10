@@ -170,7 +170,7 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={2} textAlign={'center'}>
+            <Grid container spacing={2} textAlign={'center'} style={{display: "none"}}>
                 <Grid item xs={12}>
                     <div style={{alignItems: "center"}}>
                         <input accept="image/*" style={{display: "none"}} id="icon-button-file" type="file" multiple onChange={this.handleFileChange}/>

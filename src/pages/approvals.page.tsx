@@ -22,7 +22,9 @@ export interface IAppState {
   rows: GridRowsProp
   open: boolean
   objData: any,
-  searchkeyword: any
+  searchkeyword: any,
+  student_name: any,
+  studentId: any
 }
 const style = {
   position: 'absolute' as 'absolute',
@@ -47,7 +49,9 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
       rows: [],
       open: false,
       objData: 1,
-      searchkeyword: undefined
+      searchkeyword: undefined,
+      student_name: undefined,
+      studentId: undefined
     }
   }
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,7 +134,7 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
       this.setState({ open: false });
     }
   
-    const handleOpen = (id: any) => {
+    const handleOpen = (id: any, studentname: any) => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
       fetch(BACKEND_URL+"/programOfficer/studentEventApproveViewList/"+id+"/", {
@@ -140,10 +144,13 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
       })
         .then(response => response.json())
         .then(result => {
-          console.log(result)
+          // console.log(result)
           
           this.setState({ objData: result.data });
           this.setState({ open: true });
+          this.setState({ student_name: studentname });
+          this.setState({ studentId: id });
+          
         })
         .catch(error => console.log('error', error));
 
@@ -167,7 +174,8 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
         sortable: false,
         renderCell: (params) => {
           const { api_id } = params.row;
-          return <Button onClick={() => { handleOpen(api_id) }}>
+          const { student_name } = params.row;
+          return <Button onClick={() => { handleOpen(api_id, student_name) }}>
                     <img
                       src={`/Vector(2).png`}
                       loading="lazy"
@@ -194,7 +202,7 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
             aria-describedby="modal-modal-description"
         >
             <Box  sx={style}>
-              <EventApprovalForm objData={this.state.objData}/>
+              <EventApprovalForm objData={this.state.objData} studentName={this.state.student_name} studentId={this.state.studentId} />
             </Box>
         </Modal>
       </Box>

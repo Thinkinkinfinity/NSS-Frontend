@@ -90,15 +90,28 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
-          const rowobj = { 
-                          id: i+1, 
-                          student_name: element.firstName+" "+element.lastName,
-                          student_id: element.studentId,
-                          institution_name: element.institution.institutionName,
-                          no_of_hrs_completed: element.noOfHrsCompleted,
-                          no_of_events_completed: element.noOfEventParticipated,
-                          }
-          rowdata.push(rowobj);
+          if (userType == "ProgramOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.firstName+" "+element.lastName,
+              student_id: element.studentId,
+              institution_name: element.institution.institutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
+          else if (userType == "NibcidOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.studentName,
+              student_id: element.studentId,
+              institution_name: element.instutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
         }
         this.setState({ rows: rowdata });
       })
@@ -127,15 +140,28 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
-          const rowobj = { 
-                            id: i+1, 
-                            student_name: element.firstName+" "+element.lastName,
-                            student_id: element.studentId,
-                            institution_name: element.institution.institutionName,
-                            no_of_hrs_completed: element.noOfHrsCompleted,
-                            no_of_events_completed: element.noOfEventParticipated,
-                          }
-          rowdata.push(rowobj);
+          if (userType == "ProgramOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.firstName+" "+element.lastName,
+              student_id: element.studentId,
+              institution_name: element.institution.institutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
+          else if (userType == "NibcidOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.studentName,
+              student_id: element.studentId,
+              institution_name: element.instutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
         }
         this.setState({ rows: rowdata });
       })

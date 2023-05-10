@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import Typography from '@mui/material/Typography';
 
 export interface INibCidOfficerPhotoGalleryProps {
 }
@@ -26,6 +27,9 @@ const itemData = [
       title: 'Fern',
     },
   ];
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+let imgarray: any = [];
+
 export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOfficerPhotoGalleryProps, INibCidOfficerPhotoGalleryState> {
   constructor(props: INibCidOfficerPhotoGalleryProps) {
     super(props);
@@ -33,9 +37,31 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
     this.state = {
     }
   }
-
+  componentDidMount(): void {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    let url = BACKEND_URL+'/nibcidOfficer/eventList?page=1&page_size=20';
+    fetch(url, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        for (let i = 0; i < data.data.CompletedEvents.length; i++) {
+          const element = data.data.CompletedEvents[i];
+          imgarray.push(element.eventImages);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
   public render() {
     return (
+      <div>
+        <Typography variant="h5" gutterBottom>
+          Completed Events
+        </Typography>
         <ImageList sx={{ width: "100%", height: "100%" }} cols={4}>
             {itemData.map((item) => (
             <ImageListItem key={item.img}>
@@ -48,6 +74,7 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
             </ImageListItem>
             ))}
         </ImageList>
+      </div>
     );
   }
 }

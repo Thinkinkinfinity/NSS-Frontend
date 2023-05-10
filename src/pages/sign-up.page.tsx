@@ -157,7 +157,7 @@ export default class SignupPage extends React.Component<
               <TextField id="lastName" label="Last Name" variant="outlined" fullWidth onChange={this.handleChange} />
               <TextField id="username" label="User Name" variant="outlined" fullWidth onChange={this.handleChange} />
               <TextField id="confirmPassword" label="Confirm Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
-              <TextField id="unitId" label="Unit ID" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
+              <TextField id="unitId" label="Unit ID" variant="outlined" fullWidth onChange={this.handleChange} />
             </Stack>
           </Grid>
         </Grid>

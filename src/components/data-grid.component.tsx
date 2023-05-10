@@ -78,7 +78,7 @@ export default class ListView extends React.Component<IListViewProps, IListViewS
       console.log(dasd)
     };
     const handleEvent = (event:any) => {
-      console.log(event)
+      // console.log(event)
     }
     return (
         <div style={{ height: '70vh', width: '100%' }} className='data-grid-container'>

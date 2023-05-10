@@ -16,7 +16,8 @@ export interface IAppProps {
 }
 
 export interface IAppState {
-  rows: GridRowsProp
+  rows: GridRowsProp,
+  searchkeyword: any
 }
 
 const columns: GridColDef[] = [
@@ -160,10 +161,48 @@ export default class ProgramOfficers extends React.Component<IAppProps, IAppStat
     super(props);
 
     this.state = {
-      rows: []
+      rows: [],
+      searchkeyword: undefined
     }
   }
-
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    this.setState({searchkeyword: value})
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+    let url = "";
+    if (value.length > 0) {
+      url = BACKEND_URL+'/nibcidOfficer/programOfficerList?page=1&page_size=20&search='+value;
+    }
+    else{
+      url = BACKEND_URL+'/nibcidOfficer/programOfficerList?page=1&page_size=20';
+    }
+    fetch(url, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        const rowdata:any = [];
+        for (let i = 0; i < data.data.length; i++) {
+          const element = data.data[i];
+          const rowobj = { 
+                            id: i+1, 
+                            program_officer_name: element.programOfficerName, 
+                            unit_number: element.unitNo,  
+                            institution_name: element.instutionName,  
+                            no_of_students: element.noOfStudents,
+                            no_of_events: element.noOfEvents 
+                          }
+          rowdata.push(rowobj);
+        }
+        this.setState({ rows: rowdata });
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
   public componentDidMount() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
@@ -206,28 +245,8 @@ export default class ProgramOfficers extends React.Component<IAppProps, IAppStat
           Program Officers
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={top100Films}
-            sx={{ width: '100%', marginBottom: 3, marginTop: 3 }}
-            renderInput={(params) => <TextField {...params} label="Search by Districts / Universities / Institution" />}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth sx={{ width: '100%', marginBottom: 3, marginTop: 3 }}>
-              <InputLabel id="demo-simple-select-label">Report Generation</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Report Generation"
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid item xs={11}>
+            <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Program Officer's Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
           <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>

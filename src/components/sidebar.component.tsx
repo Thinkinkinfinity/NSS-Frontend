@@ -110,9 +110,9 @@ const menuContent = [
     link: "program-officers",
   },
   { name: "Students", icon: SchoolOutlinedIcon, link: "students" },
-  { name: "Planned Events", icon: FeedOutlinedIcon, link: "news-generation" },
-  { name: "Photo Gallery", icon: FeedOutlinedIcon, link: "gallery" },
+  { name: "Planned Events", icon: FeedOutlinedIcon, link: "events" },
   { name: "Event Completed", icon: SchoolOutlinedIcon, link: "events-completed" },
+  { name: "Photo Gallery", icon: FeedOutlinedIcon, link: "gallery" },
 ];
 
 const StudentmenuContent = [

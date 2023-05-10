@@ -270,6 +270,7 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
   }
 
   public render() {
+    const userType = localStorage.getItem('userType');
     const { rows } = this.state;
     const onPageChange = (params: any) => {
       console.log(params);
@@ -300,9 +301,11 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
             </Icon>
           </Grid>
         </Grid>
+        {userType === 'ProgramOfficers' &&
         <Button variant="outlined" style={{marginBottom: 10}} onClick={() => {
           handleOpen()
         }}>Add Event</Button>
+        }
         <ListView rows={rows} columns={columns} onPageChange={onPageChange} />
         <Modal
             open={this.state.open}
