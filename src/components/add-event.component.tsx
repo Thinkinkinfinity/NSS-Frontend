@@ -66,7 +66,6 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
       })
       .then(response => response.text())
       .then(result => {
-        console.log(result)
         window.location.reload()
         })
       .catch(error => console.log('error', error));
@@ -98,7 +97,6 @@ export default class AddEventForm extends React.Component<IAddEventFormProps, IA
                             disablePast 
                             sx={{width: "100%", marginTop: "15px"}} 
                             onChange={(newValue) => {
-                                console.log(newValue?.format("YYYY-MM-DD"));
                                 this.setState({ eventDate: newValue?.format("YYYY-MM-DD") });
                             }}
                         />

@@ -77,7 +77,6 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
         url = BACKEND_URL+'/nibcidOfficer/studentList?page=1&page_size=20';
       }
     }
-    console.log(url)
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     fetch(url, {
@@ -86,7 +85,6 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -136,7 +134,7 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
+        console.log(data.data)
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -144,7 +142,7 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
             const rowobj = { 
               id: i+1, 
               student_name: element.firstName+" "+element.lastName,
-              student_id: element.studentId,
+              student_id: element.id,
               institution_name: element.institution.institutionName,
               no_of_hrs_completed: element.noOfHrsCompleted,
               no_of_events_completed: element.noOfEventParticipated,
@@ -174,7 +172,6 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
     const userType = localStorage.getItem('userType');
     const { rows } = this.state;
     const onPageChange = (params: any) => {
-      console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
 
@@ -191,17 +188,17 @@ export default class StudentPage extends React.Component<IAppProps, IAppState> {
           Students
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={11}>
+          <Grid item xs={12}>
             <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Student Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
-          <Grid item xs={1}>
+          {/* <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/pdf_icon.png" alt="My Icon" />
             </Icon>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/xls_icon.png" alt="My Icon" />
             </Icon>
-          </Grid>
+          </Grid> */}
         </Grid>
         {userType === 'ProgramOfficers' &&
         <Button variant="outlined" style={{marginBottom: 10}} onClick={() => {

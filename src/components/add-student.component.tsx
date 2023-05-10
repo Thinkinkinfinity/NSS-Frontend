@@ -117,10 +117,11 @@ export default class AddStudentForm extends React.Component<IAddStudentFormProps
                     <TextField
                         fullWidth
                         margin="normal"
-                        label="Username"
-                        name="username"
+                        label="Password"
+                        name="password"
+                        type="password"
+                        id='password'
                         size="small"
-                        id='username'
                         onChange={this.handleChange}
                     />
                 </Grid>
@@ -154,16 +155,6 @@ export default class AddStudentForm extends React.Component<IAddStudentFormProps
                         name="username"
                         size="small"
                         id='username'
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Password"
-                        name="password"
-                        type="password"
-                        id='password'
-                        size="small"
                         onChange={this.handleChange}
                     />
                 </Grid>

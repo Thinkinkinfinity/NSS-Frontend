@@ -72,19 +72,31 @@ export default class EventsCompletedPage extends React.Component<IEventsComplete
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
-        for (let i = 0; i < data.data.CompletedEvents.length; i++) {
-          const element = data.data.CompletedEvents[i];
-          const rowobj = { 
-                            id: i+1, 
-                            event_name: element.eventName,
-                            event_date: element.eventDate,
-                            event_type: element.eventType,
-                            event_location: element.eventLocation,
-                            event_description: element.eventDescription,
-                          }
-          rowdata.push(rowobj);
+        for (let i = 0; i < data.data.length; i++) {
+          const element = data.data[i];
+          if (userType == "ProgramOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.firstName+" "+element.lastName,
+              student_id: element.studentId,
+              institution_name: element.institution.institutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
+          else if (userType == "NibcidOfficers") {
+            const rowobj = { 
+              id: i+1, 
+              student_name: element.studentName,
+              student_id: element.studentId,
+              institution_name: element.instutionName,
+              no_of_hrs_completed: element.noOfHrsCompleted,
+              no_of_events_completed: element.noOfEventParticipated,
+            }
+            rowdata.push(rowobj);
+          }
         }
         this.setState({ rows: rowdata });
       })
@@ -114,21 +126,22 @@ export default class EventsCompletedPage extends React.Component<IEventsComplete
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
-        for (let i = 0; i < data.data.CompletedEvents.length; i++) {
-          const element = data.data.CompletedEvents[i];
-          const rowobj = { 
-                            id: i+1, 
-                            event_name: element.eventName,
-                            event_date: element.eventDate,
-                            event_type: element.eventType,
-                            event_location: element.eventLocation,
-                            event_description: element.eventDescription,
-                          }
-          rowdata.push(rowobj);
+        if (data.data.CompletedEvents) {
+          for (let i = 0; i < data.data.CompletedEvents.length; i++) {
+            const element = data.data.CompletedEvents[i];
+            const rowobj = { 
+                              id: i+1, 
+                              event_name: element.eventName,
+                              event_date: element.eventDate,
+                              event_type: element.eventType,
+                              event_location: element.eventLocation,
+                              event_description: element.eventDescription,
+                            }
+            rowdata.push(rowobj);
+          }
+          this.setState({ rows: rowdata });
         }
-        this.setState({ rows: rowdata });
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -138,7 +151,6 @@ export default class EventsCompletedPage extends React.Component<IEventsComplete
   public render() {
     const { rows } = this.state;
     const onPageChange = (params: any) => {
-      console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
     return (
@@ -147,17 +159,17 @@ export default class EventsCompletedPage extends React.Component<IEventsComplete
           Completed Events
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={11}>
+          <Grid item xs={12}>
             <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Event Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
-          <Grid item xs={1}>
+          {/* <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/pdf_icon.png" alt="My Icon" />
             </Icon>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/xls_icon.png" alt="My Icon" />
             </Icon>
-          </Grid>
+          </Grid> */}
         </Grid>
         <ListView rows={rows} columns={columns} onPageChange={onPageChange} />
       </Box>

@@ -142,34 +142,6 @@ export default class ActivityUpdateForm extends React.Component<IActivityUpdateF
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <TextField
-                        required
-                        fullWidth
-                        margin="normal"
-                        label="Service Hours"
-                        name="servicehours"
-                        size="small"
-                        disabled
-                        value={this.props.objData.eventServiceHrs}
-                        onChange={this.handleChange}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        required
-                        fullWidth
-                        margin="normal"
-                        label="Participant type"
-                        name="participant_type"
-                        size="small"
-                        disabled
-                        value={this.props.objData.participantType}
-                        onChange={this.handleChange}
-                    />
-                </Grid>
-            </Grid>
             <Grid container spacing={2} textAlign={'center'} style={{display: "none"}}>
                 <Grid item xs={12}>
                     <div style={{alignItems: "center"}}>

@@ -2,11 +2,15 @@ import * as React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
 export interface INibCidOfficerPhotoGalleryProps {
 }
 
 export interface INibCidOfficerPhotoGalleryState {
+  events: any
 }
 
 const itemData = [
@@ -35,6 +39,7 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
     super(props);
 
     this.state = {
+      events: []
     }
   }
   componentDidMount(): void {
@@ -47,10 +52,9 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
     })
       .then((response) => response.json())
       .then((data) => {
-        for (let i = 0; i < data.data.CompletedEvents.length; i++) {
-          const element = data.data.CompletedEvents[i];
-          imgarray.push(element.eventImages);
-        }
+        let combinedArray = []
+        combinedArray = data.data.CompletedEvents.concat(data.data.upcomingEvents)
+        this.setState({events: combinedArray})
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -60,20 +64,33 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
     return (
       <div>
         <Typography variant="h5" gutterBottom>
-          Completed Events
+          Gallery
         </Typography>
-        <ImageList sx={{ width: "100%", height: "100%" }} cols={4}>
-            {itemData.map((item) => (
-            <ImageListItem key={item.img}>
-                <img
-                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                alt={item.title}
-                loading="lazy"
-                />
-            </ImageListItem>
+        <Card sx={{ minWidth: 275 }}>
+          <CardContent>
+            {this.state.events && this.state.events.map((obj:any) => (
+            <div key={obj.id}>
+            <Typography variant="h6" style={{fontSize: 16, fontWeight: 300}} gutterBottom>
+                {obj.eventName}
+            </Typography>
+            <ImageList sx={{ width: "100%", height: "inherit" }} cols={4} rowHeight={164} gap={50}>
+              {obj.eventImages.map((item:any) => (
+                <ImageListItem key={item.eventImage}>
+                  <img
+                    src={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format`}
+                    srcSet={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                    alt={item.eventImage}
+                    loading="lazy"
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+            </div>
             ))}
-        </ImageList>
+          </CardContent>
+          <CardActions>
+          </CardActions>
+        </Card>
       </div>
     );
   }

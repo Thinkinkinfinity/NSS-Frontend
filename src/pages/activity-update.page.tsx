@@ -69,7 +69,6 @@ export default class ActivityUpdatePage extends React.Component<
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         this.setState({ upcoming_activity: data.data.upcomingEvent });
         this.setState({ completed_activity: data.data.completedEvent });
       })

@@ -36,6 +36,9 @@ export interface IMyUploadsPageProps {
 export interface IMyUploadsPageState {
   rows: any,
   open: boolean,
+  selected_event: string,
+  selectedFiles: any,
+  selectedfilestext: string
 }
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -46,15 +49,24 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
 
     this.state = {
       open: false,
-      rows: undefined
+      rows: undefined,
+      selected_event: '',
+      selectedFiles: [],
+      selectedfilestext: ''
     }
   }
+  handleSelectChange = (event: SelectChangeEvent) => {
+    const  value = event.target.value;
+    this.setState((prevState) => ({
+        ...prevState,
+        ["selected_event"]: value
+    }));
+  };
   handleFileChange = (event: any) => {
-    console.log(event.target.files)
+    const fileNames = [...event.target.files].map(file => file.name).join(', ');
     const files = event.target.files;
-    console.log(files)
-    // const fileNames = Array.from(files as FileList).map((file) => file.name);
-  // this.setState({ selectedFiles: files });
+    this.setState({ selectedFiles: files })
+    this.setState({selectedfilestext: fileNames})
   };
   public componentDidMount(): void {
     var myHeaders = new Headers();
@@ -65,16 +77,13 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         this.setState({ rows: data.data });
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });    
   }
-  uploadfunction () {
-    console.log("das")  
-  }
+  
   public render() {
     const handleOpen = () => {
       this.setState({ open: true });
@@ -83,15 +92,43 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
     const handleClose = () => {
       this.setState({ open: false });
     }
+
+    const handleUpload = () => {
+      const userid = localStorage.getItem('userId')
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
+      
+      var formdata = new FormData();
+      // Loop through the selected files and append them to the FormData object
+      for (let i = 0; i < this.state.selectedFiles.length; i++) {
+          formdata.append('eventImages', this.state.selectedFiles[i], this.state.selectedFiles[i].name);
+      }
+  
+      // Add other form data values to the FormData object
+      formdata.append('userId', userid ? userid : '');
+      formdata.append('eventId', this.state.selected_event);
+      console.log(formdata.get('eventImages'))
+      fetch(BACKEND_URL+"/student/studentEvent/", {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow'
+        })
+        .then(response => response.text())
+        .then(result => {
+          window.location.reload();
+          })
+        .catch(error => console.log('error', error));  
+    }
     return (
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={11}>
+          <Grid item xs={8}>
             <Typography variant="h5" gutterBottom>
               My Uploads
             </Typography>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={4}>
             <Button variant="contained" onClick={handleOpen}>Upload</Button>
           </Grid>
         </Grid>
@@ -105,11 +142,11 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
             </Typography>
             <ImageList sx={{ width: "100%", height: "inherit" }} cols={4} rowHeight={164} gap={50}>
               {obj.eventImages.map((item:any) => (
-                <ImageListItem key={item.img}>
+                <ImageListItem key={item.eventImage}>
                   <img
-                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                    alt={item.title}
+                    src={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format`}
+                    srcSet={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                    alt={item.eventImage}
                     loading="lazy"
                   />
                 </ImageListItem>
@@ -137,12 +174,12 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  // value={age}
+                  value={this.state.selected_event}
                   label="Event"
-                  // onChange={handleChange}
+                  onChange={this.handleSelectChange}
                 >
                   {this.state.rows && this.state.rows.map((obj:any) => (
-                  <MenuItem value={obj.id}>{obj.eventName}</MenuItem>
+                  <MenuItem key={obj.id} value={obj.id}>{obj.eventName}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -157,7 +194,11 @@ export default class MyUploadsPage extends React.Component<IMyUploadsPageProps, 
                               <PhotoCamera />
                           </IconButton>
                       </label>
+                      <p style={{fontSize: 15}}>Selected files: {this.state.selectedfilestext}</p>
                   </div>
+              </Grid>
+              <Grid item xs={12} sx={{textAlign: "center"}}>
+                <Button variant="contained" onClick={handleUpload}>Upload</Button>
               </Grid>
             </Grid>
 

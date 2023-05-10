@@ -64,7 +64,6 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
     else{
       url = BACKEND_URL+'/programOfficer/studentEventApprovalList?page=1&page_size=20';
     }
-    console.log(url)
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
     fetch(url, {
@@ -73,7 +72,6 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -105,7 +103,7 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
+        console.log(data.data)
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -113,7 +111,7 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
             const rowobj = { 
               id: i+1, 
               student_name: element.studentName,
-              student_id: element.studentId,
+              student_id: element.id,
               no_of_hrs_completed: element.noOfHrsCompleted,
               no_of_events_completed: element.noOfEventParticipated,
               status: element.status,
@@ -144,8 +142,6 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
       })
         .then(response => response.json())
         .then(result => {
-          // console.log(result)
-          
           this.setState({ objData: result.data });
           this.setState({ open: true });
           this.setState({ student_name: studentname });
@@ -158,7 +154,6 @@ export default class ApprovalsPage extends React.Component<IAppProps, IAppState>
     
     const { rows } = this.state;
     const onPageChange = (params: any) => {
-      console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
     const columns: GridColDef[] = [

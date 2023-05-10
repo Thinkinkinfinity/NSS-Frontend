@@ -72,7 +72,6 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
           }
           return obj.status === 'pending';
         });
-        console.log(rowdata)
 
         this.setState({ requsr: rowdata });
       })
@@ -86,7 +85,6 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data.name)
         this.setState({ institution_name: data.data.name });
       })
   }
@@ -100,7 +98,6 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
   }
   
   const handleapprove = (id:any) => {
-    console.log(id)
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer "+localStorage.getItem('access'));
@@ -122,7 +119,6 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
     })
       .then(response => response.text())
       .then(result => {
-        console.log(result);
         window.location.reload();
       })
       .catch(error => console.log('error', error));
@@ -208,7 +204,7 @@ export default class ProgramOfficerDashboard extends React.Component<IProgramOff
               </Typography>
               <List>
               {this.state.requsr.map((item:any) => (
-                <ListItem disablePadding key={item}>
+                <ListItem disablePadding key={item.id}>
                   <ListItemButton>
                     <ListItemIcon>
                       <Avatar alt="Remy Sharp" src="/1.jpeg" />

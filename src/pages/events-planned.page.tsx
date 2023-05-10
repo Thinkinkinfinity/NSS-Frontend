@@ -208,7 +208,6 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
         if(data.data.upcomingEvents){
           for (let i = 0; i < data.data.upcomingEvents.length; i++) {
@@ -248,21 +247,22 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
-        for (let i = 0; i < data.data.upcomingEvents.length; i++) {
-          const element = data.data.upcomingEvents[i];
-          const rowobj = { 
-                            id: i+1, 
-                            event_name: element.eventName, 
-                            event_date: element.eventDate,  
-                            event_type: element.eventType,  
-                            event_description: element.eventDescription,
-                            location: element.eventLocation
-                          }
-          rowdata.push(rowobj);
+        if (data.data.upcomingEvents) {
+          for (let i = 0; i < data.data.upcomingEvents.length; i++) {
+            const element = data.data.upcomingEvents[i];
+            const rowobj = { 
+                              id: i+1, 
+                              event_name: element.eventName, 
+                              event_date: element.eventDate,  
+                              event_type: element.eventType,  
+                              event_description: element.eventDescription,
+                              location: element.eventLocation
+                            }
+            rowdata.push(rowobj);
+          }
+          this.setState({ rows: rowdata });
         }
-        this.setState({ rows: rowdata });
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -273,7 +273,6 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
     const userType = localStorage.getItem('userType');
     const { rows } = this.state;
     const onPageChange = (params: any) => {
-      console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
     const handleOpen = () => {
@@ -289,17 +288,17 @@ export default class EventsPlannedPage extends React.Component<IAppProps, IAppSt
           Upcoming Events
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={11}>
+          <Grid item xs={12}>
           <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Event Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
-          <Grid item xs={1}>
+          {/* <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/pdf_icon.png" alt="My Icon" />
             </Icon>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/xls_icon.png" alt="My Icon" />
             </Icon>
-          </Grid>
+          </Grid> */}
         </Grid>
         {userType === 'ProgramOfficers' &&
         <Button variant="outlined" style={{marginBottom: 10}} onClick={() => {

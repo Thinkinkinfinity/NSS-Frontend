@@ -53,7 +53,6 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
         "comments": this.state.comments,
         "noOfHrsCompleted": parseInt(this.state.noOfHrsCompleted)
       });
-    console.log(raw)
       
     fetch(BACKEND_URL+'/programOfficer/eventApproval/', {
         method: 'POST',
@@ -63,13 +62,11 @@ export default class EventApprovalForm extends React.Component<IEventApprovalFor
       })
       .then(response => response.text())
       .then(result => {
-        console.log(result)
         window.location.reload()
         })
       .catch(error => console.log('error', error));
 };
   componentDidMount(): void {
-    console.log(this.props)
   }
   public render() {
     return (

@@ -56,7 +56,6 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -84,7 +83,6 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         const rowdata:any = [];
         for (let i = 0; i < data.data.length; i++) {
           const element = data.data[i];
@@ -107,7 +105,6 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
   public render() {
     const { rows } = this.state;
     const onPageChange = (params: any) => {
-      console.log(params);
       // Handle page change here, e.g. fetch data for new page
     };
     return (
@@ -116,17 +113,17 @@ export default class InstitutionPage extends React.Component<IAppProps, IAppStat
           Institutions
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={11}>
+          <Grid item xs={12}>
             <TextField id="outlined-basic" onChange={this.handleChange} label="Search by Institution Name" variant="outlined" sx={{ width: '100%', marginBottom: 3, marginTop: 3 }} />
           </Grid>
-          <Grid item xs={1}>
+          {/* <Grid item xs={1}>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/pdf_icon.png" alt="My Icon" />
             </Icon>
             <Icon sx={{ width: '50%', marginBottom: 3, marginTop: 4, height: "100%" }}>
               <img src="/xls_icon.png" alt="My Icon" />
             </Icon>
-          </Grid>
+          </Grid> */}
         </Grid>
         
         <ListView rows={rows} columns={columns} onPageChange={onPageChange} />
