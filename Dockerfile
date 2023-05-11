@@ -7,6 +7,8 @@ COPY package*.json ./
 # Install the dependencies
 RUN npm install
 
+RUN npm install -g serve
+
 # Copy the rest of the application code to the container
 COPY . .
 
@@ -17,4 +19,5 @@ RUN npm run build
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+CMD ["serve", "-s", "build", "-l", "80"]
