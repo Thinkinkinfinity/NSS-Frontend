@@ -72,7 +72,8 @@ export default class SignupPage extends React.Component<
         "lastName": this.state.lastName,
         "phoneNumber": this.state.phoneNumber,
         "userType": this.state.userType,
-        "institutionId": this.state.institutionId
+        "institutionId": this.state.institutionId,
+        "unitId": this.state.unitId
       });
     } else {
       var raw = JSON.stringify({
