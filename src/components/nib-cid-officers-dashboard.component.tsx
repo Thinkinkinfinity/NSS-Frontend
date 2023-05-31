@@ -11,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Icon from '@mui/material/Icon';
 import BarChartComponent from './bar-chart.component';
 import PieChartComponent from './pie-chart.component';
-
+import ChoroplethMapDrillDown from './map.component';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -39,10 +39,7 @@ export default class NibCidOfficersDashboard extends React.Component<INibCidOffi
       <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
         <Grid item md={7}>
-          <img
-            src={`/tamilnadu-map.png`}
-            loading="lazy"
-          />
+          <ChoroplethMapDrillDown/>
         </Grid>
         <Grid item md={5}>
           <Grid container spacing={1}>
