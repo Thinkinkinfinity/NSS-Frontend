@@ -3,16 +3,16 @@ import L from "leaflet";
 
 export function getColor(d) {
   return d > 25
-    ? "#800026"
+    ? "#3354F4"
     : d > 20
-    ? "#E31A1C"
+    ? "#74ABFF"
     : d > 15
-    ? "#FD8D3C"
+    ? "#3FB8F7"
     : d > 10
-    ? "#FEB24C"
+    ? "#AAE2FF"
     : d > 5
-    ? "#FED976"
-    : "#FFEDA0";
+    ? "#3354F4"
+    : "#3354F4";
 }
 
 export function getCenterOfGeoJson(geoJson) {
