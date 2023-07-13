@@ -192,9 +192,10 @@ export default class AddStudentForm extends React.Component<IAddStudentFormProps
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '50%',
+                    width: '8%',
                     margin: 'auto',
                     marginTop: '1rem',
+                    fontWeight:'bolder',
                 }}
             >
                 Save
