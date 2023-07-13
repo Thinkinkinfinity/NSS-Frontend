@@ -16,14 +16,24 @@ export interface ISignupPageProps {}
 
 export interface ISignupPageState {
   username: string;
+  usernameError: string;
   email: string;
+  emailError: string;
   password: string;
+  passwordError: string;
+  confirmPassword: string;
+  confirmPasswordError: string;
   firstName: string;
+  firstNameError: string;
   lastName: string;
+  lastNameError: string;
   phoneNumber: string;
+  phoneNumberError: string;
   userType: string;
   institutionId: string;
+  institutionIdError: string;
   unitId: string
+  unitIdError: string
 }
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -36,22 +46,91 @@ export default class SignupPage extends React.Component<
 
     this.state = {
       username: '',
+      usernameError: '',
       email: '',
+      emailError: '',
       password: '',
+      passwordError: '',
+      confirmPassword:'',
+      confirmPasswordError:'',
       firstName: '',
+      firstNameError: '',
       lastName: '',
+      lastNameError: '',
       phoneNumber: '',
+      phoneNumberError: '',
       userType: 'NibcidOfficers',
       institutionId: '',
-      unitId: ''
+      institutionIdError: '',
+      unitId: '',
+      unitIdError: ''
     };
   }
-  handleChange = (event: React.ChangeEvent<HTMLInputElement | { id?: string; value: unknown }>) => {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement | { id?: string; value: string }>) => {
     const { id, value } = event.target;
     this.setState((prevState) => ({
       ...prevState,
       [id!]: value,
     }));
+  
+    // Validate the field
+    if (id === 'firstName') {
+      if (value.trim() === '') {
+        this.setState({ firstNameError: 'First name is required' });
+      } else {
+        this.setState({ firstNameError: '' });
+      }
+    }else  if (id === 'lastName') {
+      if (value.trim() === '') {
+        this.setState({ lastNameError: 'email is required' });
+      } else {
+        this.setState({ lastNameError: '' });
+      }
+    }else  if (id === 'email') {
+      if (value.trim() === '') {
+        this.setState({ emailError: 'email is required' });
+      } else {
+        this.setState({ emailError: '' });
+      }
+    }else if (id === 'password') {
+      if (value.trim() === '') {
+        this.setState({ passwordError: 'Password is required' });
+      } else {
+        this.setState({ passwordError: '' });
+      }
+    }else if (id === 'phoneNumber') {
+      if (value.trim() === '') {
+        this.setState({ phoneNumberError: 'Phone number is required' });
+      } else {
+        this.setState({ phoneNumberError: '' });
+      }
+    }else if (id === 'institutionId') {
+      if (value.trim() === '') {
+        this.setState({ institutionIdError: 'Institution number is required' });
+      } else {
+        this.setState({ institutionIdError: '' });
+      }
+    }else if (id === 'unitId') {
+      if (value.trim() === '') {
+        this.setState({ unitIdError: 'Unit number is required' });
+      } else {
+        this.setState({ unitIdError: '' });
+      }
+    }else if (id === 'username') {
+      if (value.trim() === '') {
+        this.setState({ usernameError: 'Username is required' });
+      } else {
+        this.setState({ usernameError: '' });
+      }
+    }else if (id === 'confirmPassword') {
+      if (value.trim() === '') {
+        this.setState({ confirmPasswordError: 'Confirm password is required' });
+      } else {
+        this.setState({ confirmPasswordError: '' });
+      }
+    }
+  
+    // Add validation for other fields
   };
   handleSelectChange = (event: SelectChangeEvent) => {
     if (event.target.value == "Students") {
@@ -63,6 +142,9 @@ export default class SignupPage extends React.Component<
   };
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!this.validateForm()) {
+      return; // Stop form submission if validation fails
+    }
     if (this.state.userType == "ProgramOfficers") {
       var raw = JSON.stringify({
         "username": this.state.username,
@@ -88,6 +170,8 @@ export default class SignupPage extends React.Component<
     }
     
     try {
+      console.log("raw",raw);
+      
         const response = await fetch(BACKEND_URL+'/auth/register/', {
           method: 'POST',
           headers: {
@@ -98,11 +182,78 @@ export default class SignupPage extends React.Component<
     
         const data = await response.json();
         console.log(data); // do something with the response data
-        window.location.reload();
+        // window.location.reload();
       } catch (error) {
         alert(error);
       }
     
+  };
+
+  validateForm = () => {
+    const { username, email, password, firstName, lastName, phoneNumber, institutionId, unitId, confirmPassword } = this.state;
+    let isValid = true;
+  
+    // Perform validation for each field
+    if (firstName.trim() === '') {
+      this.setState({ firstNameError: 'First name is required' });
+      isValid = false;
+    } else {
+      this.setState({ firstNameError: '' });
+    }
+
+    if (lastName.trim() === '') {
+      this.setState({ lastNameError: 'Last name is required' });
+      isValid = false;
+    } else {
+      this.setState({ lastNameError: '' });
+    }
+
+    if (username.trim() === '') {
+      this.setState({ usernameError: 'Username is required' });
+      isValid = false;
+    } else {
+      this.setState({ usernameError: '' });
+    }
+
+    if (email.trim() === '') {
+      this.setState({ emailError: 'email is required' });
+    } else {
+      this.setState({ emailError: '' });
+    }
+
+    if (password.trim() === '') {
+      this.setState({ passwordError: 'Password is required' });
+    } else {
+      this.setState({ passwordError: '' });
+    }
+
+    if (phoneNumber.trim() === '') {
+      this.setState({ phoneNumberError: 'Phone number is required' });
+    } else {
+      this.setState({ phoneNumberError: '' });
+    }
+
+    if (institutionId.trim() === '') {
+      this.setState({ institutionIdError: 'Institution number is required' });
+    } else {
+      this.setState({ institutionIdError: '' });
+    }
+
+    if (unitId.trim() === '') {
+      this.setState({ unitIdError: 'Unit number is required' });
+    } else {
+      this.setState({ unitIdError: '' });
+    }
+
+    if (confirmPassword.trim() === '') {
+      this.setState({ confirmPasswordError: 'Confirm Password is required' });
+    } else {
+      this.setState({ confirmPasswordError: '' });
+    }
+  
+    // Add validation for other fields
+  
+    return isValid;
   };
 
   public render() {
@@ -146,19 +297,28 @@ export default class SignupPage extends React.Component<
                 <MenuItem value={"NssCoordinators"}>Nss Co-ordinators</MenuItem>
               </Select>
             </FormControl>
-            <TextField id="firstName" label="First Name" variant="outlined" fullWidth onChange={this.handleChange} />
-            <TextField id="phoneNumber" label="Phone Number" variant="outlined" fullWidth onChange={this.handleChange} />
-            <TextField id="password" label="Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
-            <TextField id="institutionId" label="Institution Id" variant="outlined" fullWidth onChange={this.handleChange} />
+            <TextField id="firstName" label="First Name" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.firstNameError}
+  helperText={this.state.firstNameError}/>
+            <TextField id="phoneNumber" label="Phone Number" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.phoneNumberError}
+  helperText={this.state.phoneNumberError}/>
+            <TextField id="password" label="Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" error={!!this.state.passwordError}
+  helperText={this.state.passwordError}/>
+            <TextField id="institutionId" label="Institution Id" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.institutionIdError}
+  helperText={this.state.institutionIdError}/>
           </Stack>
           </Grid>
           <Grid item xs={6}>
             <Stack spacing={2}>
-              <TextField id="email" label="Email ID" variant="outlined" fullWidth onChange={this.handleChange} />
-              <TextField id="lastName" label="Last Name" variant="outlined" fullWidth onChange={this.handleChange} />
-              <TextField id="username" label="User Name" variant="outlined" fullWidth onChange={this.handleChange} />
-              <TextField id="confirmPassword" label="Confirm Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" />
-              <TextField id="unitId" label="Unit ID" variant="outlined" fullWidth onChange={this.handleChange} />
+              <TextField id="email" label="Email ID" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.emailError}
+  helperText={this.state.emailError}/>
+              <TextField id="lastName" label="Last Name" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.lastNameError}
+  helperText={this.state.lastNameError}/>
+              <TextField id="username" label="User Name" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.usernameError}
+  helperText={this.state.usernameError}/>
+              <TextField id="confirmPassword" label="Confirm Password" variant="outlined" fullWidth onChange={this.handleChange} type="password" error={!!this.state.confirmPasswordError}
+  helperText={this.state.confirmPasswordError}/>
+              <TextField id="unitId" label="Unit ID" variant="outlined" fullWidth onChange={this.handleChange} error={!!this.state.unitIdError}
+  helperText={this.state.unitIdError}/>
             </Stack>
           </Grid>
         </Grid>
