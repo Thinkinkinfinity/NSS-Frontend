@@ -2,6 +2,8 @@ import * as React from 'react';
 import { SyntheticEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Button, Link as MuiLink, SelectChangeEvent } from '@mui/material';
+import { log } from 'console';
+import Swal from 'sweetalert2';
 
 interface ILoginFormProps {
   setIsLoggedIn: (isLoggedIn: boolean) => void;
@@ -52,10 +54,20 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
       body: JSON.stringify(data)
     };
 
+    
+
     fetch(url, options)
       .then(response => response.json())
       .then(data => {
         console.log(data)
+        
+         // Check if `data.detail` is defined
+      if (data.detail) {
+        console.log("message", data.detail);
+        var errorMsg = data.detail;
+        alert(errorMsg);
+      }
+
 
         // If "Remember Me" checkbox is checked, store credentials in localStorage
         if (this.state.rememberMe) {
@@ -76,7 +88,12 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
         this.props.setIsLoggedIn(true);
       })
       .catch(error => console.error(error));
+    
+      
   };
+
+
+
   componentDidMount() {
     const rememberMe = localStorage.getItem('rememberMe') === 'true';
     const username = rememberMe ? localStorage.getItem('username') || '' : '';
