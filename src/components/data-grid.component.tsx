@@ -95,7 +95,7 @@ export default class ListView extends React.Component<IListViewProps, IListViewS
             disableColumnFilter
             disableColumnSelector
             disableDensitySelector
-            checkboxSelection
+            // checkboxSelection
             // slots={{ toolbar: GridToolbar }}
             // slotProps={{
             //     toolbar: {

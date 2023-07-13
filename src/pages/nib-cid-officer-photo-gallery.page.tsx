@@ -73,13 +73,14 @@ export default class NibCidOfficerPhotoGallery extends React.Component<INibCidOf
             <Typography variant="h6" style={{fontSize: 16, fontWeight: 300}} gutterBottom>
                 {obj.eventName}
             </Typography>
-            <ImageList sx={{ width: "100%", height: "inherit" }} cols={4} rowHeight={164} gap={50}>
+            <ImageList sx={{ width: "100%"}} cols={4} gap={50}>
               {obj.eventImages.map((item:any) => (
-                <ImageListItem key={item.eventImage}>
+                <ImageListItem key={item.eventImage} sx={{ height: '200px' }}>
                   <img
                     src={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format`}
                     srcSet={BACKEND_URL+`${item.eventImage}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                     alt={item.eventImage}
+                    style={{ width: '100%',minHeight:'177px',maxHeight:'177px', objectFit: 'contain' }}
                     loading="lazy"
                   />
                 </ImageListItem>
