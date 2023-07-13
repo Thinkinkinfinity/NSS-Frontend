@@ -65,7 +65,11 @@ class LoginForm extends React.Component<ILoginFormProps, ILoginFormState> {
       if (data.detail) {
         console.log("message", data.detail);
         var errorMsg = data.detail;
-        alert(errorMsg);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMsg,
+        });
       }
 
 
